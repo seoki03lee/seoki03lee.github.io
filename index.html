@@ -24,8 +24,6 @@
 
 body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg-main); color: var(--text-main); min-height: 100vh; }
 
-.app { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 40px 20px; }
-
 body::before {
 content: ‘’;
 position: fixed; inset: 0;
@@ -39,28 +37,9 @@ z-index: 0;
 
 .app { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 40px 20px; }
 
-.header {
-display: flex; align-items: center; justify-content: space-between;
-padding-bottom: 30px;
-margin-bottom: 40px;
-border-bottom: 2px solid var(–border);
-}
-.logo {
-font-family: ‘Space Mono’, monospace;
-font-size: 24px;
-background: var(–green-grad);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-font-weight: 900;
-}
-.logo span {
-color: var(–text-muted);
-font-size: 0.5em;
-display: block;
-font-family: ‘Noto Sans KR’, sans-serif;
-font-weight: 400;
--webkit-text-fill-color: var(–text-muted);
-}
+.header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 30px; margin-bottom: 40px; border-bottom: 2px solid var(--border); }
+.logo { font-family: 'Noto Sans KR', sans-serif; font-size: 28px; font-weight: 900; color: #222; } /* 볼드체 강조 */
+.logo span { color: var(--text-muted); font-size: 0.5em; display: block; font-weight: 400; }
 
 .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 40px; }
 .info-card {
@@ -610,6 +589,18 @@ function blobToBase64(blob) {
   });
 }
 
+// ── JSON 추출 유틸리티 (에러 해결 핵심!) ──
+function extractJSON(text) {
+    try {
+        // { 로 시작해서 } 로 끝나는 가장 큰 덩어리를 찾음
+        const match = text.match(/\{[\s\S]*\}/);
+        if (match) return JSON.parse(match[0]);
+        return JSON.parse(text);
+    } catch (e) {
+        throw new Error("JSON 추출 실패: " + e.message);
+    }
+}
+
 // ── ANALYZE AUDIO WITH GEMINI ──
 async function analyzeAudioWithGemini(blob, index, apiKey) {
   const b64 = await blobToBase64(blob);
@@ -649,16 +640,9 @@ Analyze this 3-second audio clip and return ONLY valid JSON (no markdown, no exp
     throw new Error(`Gemini API ${response.status}: ${errText.slice(0, 200)}`);
   }
 
-  const data = await response.json();
-
-  // 🔧 FIX: 에러 응답 체크
-  if (data.error) throw new Error(`Gemini 오류: ${data.error.message}`);
-
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  if (!text) throw new Error('Gemini 응답이 비어있음');
-
-  const clean = text.replace(/```json|```/g, '').trim();
-  return JSON.parse(clean);
+   const data = await response.json();
+   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+   return extractJSON(text); // 강화된 파싱 함수 사용
 }
 
 // ── DESIGN BEAT WITH GEMINI ──
@@ -706,13 +690,8 @@ Rules:
   }
 
   const data = await response.json();
-  if (data.error) throw new Error(`Gemini 오류: ${data.error.message}`);
-
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  if (!text) throw new Error('비트 설계 응답 비어있음');
-
-  const clean = text.replace(/```json|```/g, '').trim();
-  return JSON.parse(clean);
+  return extractJSON(text); // 강화된 파싱 함수 사용
 }
 
 // ── PEAK EXTRACTION ──
