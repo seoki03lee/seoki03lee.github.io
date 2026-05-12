@@ -7,28 +7,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0a0a0a;
-    --white: #f5f0e8;
-    --green: #00ff7f;
-    --green-dim: #00a050;
-    --green-dark: #003320;
-    --amber: #ffb300;
-    --red: #ff3c3c;
-    --surface: #111811;
-    --surface2: #192419;
-    --border: #1e3a1e;
-    --text-muted: #4a7a4a;
-    --radius: 16px;
+    --bg-main: #fcfbf9;
+    --bg-sub: #ffffff;
+    --black: #1a1a1a;
+    --text-main: #2c3e2c;
+    --text-muted: #809680;
+    --green-grad: linear-gradient(135deg, #00f5a0 0%, #00d9e1 100%);
+    --green-solid: #00c896;
+    --green-dark: #004d3d;
+    --border: #e0eae0;
+    --red: #ff5252;
+    --radius: 20px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.05);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: 'Noto Sans KR', sans-serif;
-    background: var(--white);
-    color: var(--white);
+    background: var(--bg-main);
+    color: var(--text-main);
     min-height: 100vh;
-    overflow-x: hidden;
   }
 
   /* ── GRID BG ── */
@@ -36,556 +35,199 @@
     content: '';
     position: fixed; inset: 0;
     background-image:
-      linear-gradient(rgba(0,255,127,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,127,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+      linear-gradient(rgba(0,200,150,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,150,0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
     pointer-events: none;
     z-index: 0;
   }
 
-  /* ── LAYOUT ── */
-  .app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 20px 16px 80px; }
+  .app { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 40px 20px; }
 
   /* ── HEADER ── */
   .header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 24px 0 32px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 32px;
+    padding-bottom: 30px;
+    margin-bottom: 40px;
+    border-bottom: 2px solid var(--border);
   }
   .logo {
     font-family: 'Space Mono', monospace;
-    font-size: clamp(18px, 4vw, 26px);
-    color: var(--green);
-    letter-spacing: -1px;
-    line-height: 1.1;
+    font-size: 24px;
+    background: var(--green-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
   }
-  .logo span { color: var(--white); opacity: 0.5; font-size: 0.6em; display: block; font-family: 'Noto Sans KR', sans-serif; font-weight: 300; letter-spacing: 0; }
-  .badge {
-    background: var(--green-dark);
-    border: 1px solid var(--green);
-    color: var(--green);
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    padding: 4px 10px;
-    border-radius: 99px;
-    letter-spacing: 2px;
+  .logo span { 
+    color: var(--text-muted); 
+    font-size: 0.5em; 
+    display: block; 
+    font-family: 'Noto Sans KR', sans-serif; 
+    font-weight: 400;
+    -webkit-text-fill-color: var(--text-muted);
   }
 
-  /* ── SECTION LABELS ── */
-  .section-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  /* ── INFO CARDS ── */
-  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
-  @media(max-width:500px) { .info-grid { grid-template-columns: 1fr; } }
+  /* ── CARDS ── */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 40px; }
   .info-card {
-    background: var(--surface);
+    background: var(--bg-sub);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 18px;
+    padding: 20px;
+    box-shadow: var(--shadow);
   }
-  .info-card .ic-icon { font-size: 22px; margin-bottom: 8px; }
   .info-card .ic-title {
     font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--green);
-    letter-spacing: 1px;
-    margin-bottom: 4px;
+    font-size: 12px;
+    color: var(--green-solid);
+    font-weight: 700;
+    margin-bottom: 8px;
   }
-  .info-card p { font-size: 12px; color: #8aaa8a; line-height: 1.6; }
+  .info-card p { font-size: 13px; line-height: 1.6; color: var(--text-main); }
 
-  /* ── NAV TABS ── */
+  /* ── TABS ── */
   .tabs {
-    display: flex; gap: 4px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 4px;
-    margin-bottom: 24px;
+    display: flex; gap: 8px;
+    background: #f0f4f0;
+    padding: 6px;
+    border-radius: 100px;
+    margin-bottom: 30px;
   }
   .tab {
-    flex: 1; padding: 10px;
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    background: none;
-    border: none;
-    border-radius: 12px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    letter-spacing: 1px;
+    flex: 1; padding: 12px;
+    font-size: 14px; font-weight: 700;
+    background: none; border: none; border-radius: 100px;
+    color: var(--text-muted); cursor: pointer; transition: all 0.3s;
   }
-  .tab.active { background: var(--green); color: var(--black); font-weight: 700; }
+  .tab.active { background: var(--bg-sub); color: var(--green-solid); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-  /* ── CANVAS VISUALIZER ── */
+  /* ── VISUALIZER ── */
   .viz-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--black);
     border-radius: var(--radius);
-    padding: 12px;
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
+    padding: 15px;
+    margin-bottom: 30px;
   }
-  .viz-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--text-muted); letter-spacing: 2px; margin-bottom: 8px; }
-  #canvas { width: 100%; height: 80px; display: block; }
+  #canvas { width: 100%; height: 60px; display: block; }
 
-  /* ── SOUND SLOTS ── */
+  /* ── SOUND & VIDEO ── */
   .section-panel { display: none; }
   .section-panel.active { display: block; }
 
   .sound-slot {
-    background: var(--surface);
+    background: var(--bg-sub);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 16px 20px;
-    margin-bottom: 10px;
-    display: grid;
-    grid-template-columns: 32px 1fr auto auto;
-    align-items: center;
-    gap: 14px;
-    transition: border-color 0.2s;
+    padding: 20px;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 20px;
+    box-shadow: var(--shadow);
   }
-  .sound-slot.done { border-color: var(--green-dim); }
-  .sound-slot.recording { border-color: var(--red); animation: pulse-border 0.6s infinite alternate; }
-  @keyframes pulse-border { to { box-shadow: 0 0 12px rgba(255,60,60,0.4); } }
+  .slot-num { font-family: 'Space Mono', monospace; font-size: 20px; color: var(--green-solid); font-weight: 700; }
+  .slot-info { flex: 1; }
+  .slot-name { font-weight: 700; font-size: 15px; }
+  .slot-status { font-size: 12px; color: var(--text-muted); }
 
-  .slot-num {
+  .btn-rec, .btn-vid {
+    background: var(--green-grad);
+    border: none; color: white; padding: 10px 20px;
+    border-radius: 12px; font-weight: 700; cursor: pointer;
     font-family: 'Space Mono', monospace;
-    font-size: 18px;
-    color: var(--green);
-    text-align: center;
   }
-  .slot-info { min-width: 0; }
-  .slot-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
-  .slot-status { font-size: 11px; color: var(--text-muted); font-family: 'Space Mono', monospace; }
-  .slot-status.ok { color: var(--green); }
-  .slot-status.err { color: var(--red); }
+  .btn-rec.recording { background: var(--red); animation: pulse 1s infinite; }
 
-  .instrument-badge {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: var(--green-dark);
-    color: var(--green);
-    border: 1px solid var(--green-dim);
-    white-space: nowrap;
-  }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-  .btn-rec {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--white);
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    letter-spacing: 1px;
+  .video-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .video-box { 
+    aspect-ratio: 9/16; background: #eee; border-radius: 12px; overflow: hidden; 
+    border: 2px solid transparent;
   }
-  .btn-rec:hover { border-color: var(--green); color: var(--green); }
-  .btn-rec.recording { border-color: var(--red); color: var(--red); background: rgba(255,60,60,0.08); }
-  .btn-rec.done { border-color: var(--green-dim); color: var(--green); background: rgba(0,255,127,0.05); }
-
-  /* ── VIDEO GRID ── */
-  .video-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  @media(max-width:560px) { .video-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media(max-width:380px) { .video-grid { grid-template-columns: repeat(2, 1fr); } }
-
-  .video-cell { display: flex; flex-direction: column; gap: 6px; }
-  .video-box {
-    aspect-ratio: 9/16;
-    background: #0d1a0d;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-  }
-  .video-box video { width: 100%; height: 100%; object-fit: cover; }
-  .video-box .rec-badge {
-    position: absolute; top: 6px; right: 6px;
-    background: var(--red); color: #fff;
-    font-family: 'Space Mono', monospace;
-    font-size: 8px; padding: 2px 5px; border-radius: 4px;
-    display: none; letter-spacing: 1px;
-  }
-  .video-box.recording .rec-badge { display: block; }
-  .video-box.done { border-color: var(--green-dim); }
-  .video-box .play-overlay {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(0,0,0,0.4);
-    font-size: 22px;
-  }
-  .video-cell .slot-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--text-muted);
-    text-align: center;
-  }
-  .btn-vid {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    padding: 6px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    color: var(--white);
-    cursor: pointer;
-    text-align: center;
-    width: 100%;
-    letter-spacing: 0.5px;
-  }
-  .btn-vid.done { border-color: var(--green-dim); color: var(--green); }
-
-  /* ── API KEY ── */
-  .api-row {
-    display: flex; gap: 10px; align-items: center;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    margin-bottom: 16px;
-  }
-  .api-row label { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--text-muted); white-space: nowrap; letter-spacing: 1px; }
-  .api-row input {
-    flex: 1;
-    background: none; border: none;
-    color: var(--white);
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    outline: none;
-  }
-  .api-row input::placeholder { color: var(--border); }
+  .video-box.done { border-color: var(--green-solid); }
+  video { width: 100%; height: 100%; object-fit: cover; }
 
   /* ── GENERATE BUTTON ── */
-  .generate-btn {
-    width: 100%;
-    padding: 20px;
-    border-radius: var(--radius);
-    border: none;
-    background: var(--green);
-    color: var(--black);
+  .api-row { margin: 30px 0 15px; }
+  .api-row input {
+    width: 100%; padding: 15px; border-radius: 15px;
+    border: 1px solid var(--border); background: var(--bg-sub);
     font-family: 'Space Mono', monospace;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
   }
-  .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,255,127,0.25); }
-  .generate-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-  .generate-btn .btn-progress {
-    position: absolute; left: 0; top: 0; bottom: 0;
-    background: rgba(0,0,0,0.15);
-    width: 0; transition: width 0.4s;
-  }
-  .generate-btn span { position: relative; z-index: 1; }
 
-  /* ── ANALYSIS LOG ── */
-  .log-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-top: 16px;
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--text-muted);
-    min-height: 60px;
-    max-height: 180px;
-    overflow-y: auto;
-    display: none;
+  .generate-btn {
+    width: 100%; padding: 25px; border-radius: var(--radius);
+    border: none; background: var(--green-grad); color: white;
+    font-size: 18px; font-weight: 900; cursor: pointer;
+    box-shadow: 0 15px 35px rgba(0,217,225,0.3);
   }
-  .log-box.visible { display: block; }
-  .log-line { margin-bottom: 4px; }
-  .log-line.ok { color: var(--green); }
-  .log-line.err { color: var(--red); }
-  .log-line.info { color: var(--amber); }
 
   /* ── PLAYBACK OVERLAY ── */
   #playOverlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.95);
-    z-index: 999;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
+    position: fixed; inset: 0; background: rgba(255,255,255,0.98);
+    z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center;
   }
   #playOverlay.active { display: flex; }
-  .play-grid {
-    display: flex; gap: 12px; flex-wrap: wrap;
-    justify-content: center;
-    max-width: 700px;
+  .play-cell { 
+    width: 110px; border-radius: 15px; overflow: hidden; 
+    border: 3px solid #eee; transition: all 0.2s; 
   }
-  .play-cell {
-    width: 120px;
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: all 0.1s;
-    position: relative;
-    background: #000;
-  }
-  .play-cell video { width: 100%; display: block; aspect-ratio: 9/16; object-fit: cover; }
-  .play-cell.active { border-color: var(--green); box-shadow: 0 0 30px rgba(0,255,127,0.5); transform: scale(1.06); }
-  .play-cell .beat-label {
-    position: absolute; bottom: 4px; left: 0; right: 0;
-    text-align: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--green);
-    opacity: 0;
-    transition: opacity 0.1s;
-  }
-  .play-cell.active .beat-label { opacity: 1; }
-  .play-close {
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    padding: 10px 28px;
-    border: 1px solid var(--border);
-    background: none;
-    color: var(--text-muted);
-    border-radius: 8px;
-    cursor: pointer;
-    letter-spacing: 2px;
-  }
-  .play-close:hover { color: var(--white); border-color: var(--white); }
-  .play-title {
-    font-family: 'Space Mono', monospace;
-    color: var(--green);
-    font-size: 18px;
-    letter-spacing: 3px;
-    text-align: center;
-  }
-
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 900;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .modal-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px;
-    width: 88%; max-width: 480px;
-  }
-  .modal-box h2 {
-    font-family: 'Space Mono', monospace;
-    color: var(--green);
-    font-size: 18px;
-    margin-bottom: 20px;
-    letter-spacing: 1px;
-  }
-  .step-row { display: flex; gap: 12px; margin-bottom: 16px; }
-  .step-num {
-    flex-shrink: 0;
-    width: 28px; height: 28px;
-    background: var(--green);
-    color: var(--black);
-    border-radius: 50%;
-    font-family: 'Space Mono', monospace;
-    font-weight: 700; font-size: 13px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .step-text { font-size: 13px; line-height: 1.6; color: #aaccaa; }
-  .step-text strong { color: var(--white); }
-  .modal-btn {
-    width: 100%; padding: 14px;
-    background: var(--green); color: var(--black);
-    font-family: 'Space Mono', monospace; font-size: 13px;
-    font-weight: 700; letter-spacing: 2px;
-    border: none; border-radius: 12px; cursor: pointer; margin-top: 8px;
-  }
-
-  /* ── THEORY SECTION ── */
-  .theory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
-  @media(max-width:500px) { .theory-grid { grid-template-columns: 1fr; } }
-  .theory-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px;
-  }
-  .theory-card .tc-head {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px; color: var(--green); letter-spacing: 2px; margin-bottom: 10px;
-  }
-  .theory-card p { font-size: 12px; color: #7a9a7a; line-height: 1.7; }
-  .theory-card .tc-formula {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px; color: var(--amber);
-    background: var(--black); padding: 8px; border-radius: 8px;
-    margin-top: 8px;
-  }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: var(--surface); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .play-cell.active { border-color: var(--green-solid); transform: scale(1.1); }
 </style>
 </head>
 <body>
 
-<!-- INTRO MODAL -->
-<div class="modal-overlay" id="introModal">
-  <div class="modal-box">
-    <h2>// 일상속에 비트로 🎵</h2>
-    <div class="step-row"><div class="step-num">1</div><div class="step-text"><strong>소리 녹음</strong> — 5가지 일상 소리를 각 3초씩 녹음해. 클릭하면 자동 녹음 시작!</div></div>
-    <div class="step-row"><div class="step-num">2</div><div class="step-text"><strong>AI 분석</strong> — Gemini가 소리를 듣고 어떤 악기/소리인지 분석하고, 가장 강렬한 0.5초 구간을 찾아줘.</div></div>
-    <div class="step-row"><div class="step-num">3</div><div class="step-text"><strong>영상 촬영</strong> — 후면 카메라로 5개의 3초 영상을 찍어. 각 소리에 어울리는 장면을 담아봐!</div></div>
-    <div class="step-row"><div class="step-num">4</div><div class="step-text"><strong>비트 생성!</strong> — AI가 BPM, 박자, 시퀀스를 짜고, 소리+영상이 완벽하게 싱크되어 재생돼.</div></div>
-    <button class="modal-btn" onclick="document.getElementById('introModal').remove()">시작하기 →</button>
-  </div>
-</div>
-
 <div class="app">
-  <!-- HEADER -->
   <div class="header">
     <div class="logo">
       일상속에 비트로
-      <span>Everyday Sound to Beat — AI Music Lab</span>
+      <span>AI Music & Visual Lab</span>
     </div>
-    <div class="badge">GEMINI AI</div>
   </div>
 
-  <!-- HOW IT WORKS -->
-  <div class="section-label">작동 원리</div>
   <div class="info-grid">
     <div class="info-card">
-      <div class="ic-icon">🎤</div>
-      <div class="ic-title">SOUND CAPTURE</div>
-      <p>일상의 소리 5개를 3초 녹음. Gemini Pro가 소리를 분석해 악기 분류 및 가장 강렬한 0.5초 구간을 자동 추출해.</p>
+      <div class="ic-title">01. SOUND CAPTURE</div>
+      <p>3초간 주변의 소리를 녹음하세요. Gemini가 악기 성격을 분석합니다.</p>
     </div>
     <div class="info-card">
-      <div class="ic-icon">🧠</div>
-      <div class="ic-title">AI BEAT DESIGN</div>
-      <p>Gemini Flash가 5개 소리의 특성을 보고 BPM, 박자 패턴, 시퀀스를 설계해. 킥·스네어·하이햇 역할을 자동 배분.</p>
-    </div>
-    <div class="info-card">
-      <div class="ic-icon">📹</div>
-      <div class="ic-title">VIDEO SYNC</div>
-      <p>후면 카메라로 찍은 3초 영상이 소리의 0.5초 비트에 정확히 싱크되어 재생. 소리와 영상이 완벽히 연동.</p>
-    </div>
-    <div class="info-card">
-      <div class="ic-icon">🎚️</div>
-      <div class="ic-title">WEB AUDIO API</div>
-      <p>브라우저 내장 Web Audio API로 소리를 실시간 분석. OfflineAudioContext로 0.5초 피크 구간을 정밀 추출.</p>
+      <div class="ic-title">02. VIDEO SYNC</div>
+      <p>소리에 어울리는 영상을 찍으세요. 비트에 맞춰 자동 편집됩니다.</p>
     </div>
   </div>
 
-  <!-- VISUALIZER -->
   <div class="viz-wrap">
-    <div class="viz-label">// AUDIO VISUALIZER — REALTIME FFT</div>
     <canvas id="canvas"></canvas>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
     <button class="tab active" onclick="switchTab('sound', this)">🎤 소리 녹음</button>
     <button class="tab" onclick="switchTab('video', this)">📹 영상 촬영</button>
-    <button class="tab" onclick="switchTab('theory', this)">📖 이론 자료</button>
   </div>
 
-  <!-- SOUND TAB -->
   <div id="tab-sound" class="section-panel active">
-    <div class="section-label">소리 5개 녹음 (각 3초)</div>
     <div id="soundSlots"></div>
   </div>
 
-  <!-- VIDEO TAB -->
   <div id="tab-video" class="section-panel">
-    <div class="section-label">영상 5개 촬영 (각 3초, 후면 카메라)</div>
     <div class="video-grid" id="videoGrid"></div>
-    <p style="font-size:12px; color:var(--text-muted); font-family:'Space Mono',monospace; margin-top:4px;">
-      ⚠ 카메라 권한 허용 필요 · 후면 카메라 자동 선택
-    </p>
   </div>
 
-  <!-- THEORY TAB -->
-  <div id="tab-theory" class="section-panel">
-    <div class="section-label">음악 이론 & 기술 원리</div>
-    <div class="theory-grid">
-      <div class="theory-card">
-        <div class="tc-head">// BPM & TEMPO</div>
-        <p>BPM(Beats Per Minute)은 1분에 박자가 몇 번 반복되는지를 나타내. 힙합은 보통 80~100 BPM, 하우스는 120~130 BPM이야. 이 앱은 AI가 소리 특성을 보고 최적 BPM을 결정해.</p>
-        <div class="tc-formula">beat_interval = 60000 / BPM (ms)</div>
-      </div>
-      <div class="theory-card">
-        <div class="tc-head">// FFT 주파수 분석</div>
-        <p>Fast Fourier Transform(FFT)은 소리를 주파수 성분으로 분해해. 저주파(킥 드럼)는 40-100Hz, 중주파(스네어)는 200-400Hz, 고주파(하이햇)는 8-16kHz 영역에 에너지가 집중돼.</p>
-        <div class="tc-formula">f(t) → F(ω) = ∫ f(t)e^(-iωt)dt</div>
-      </div>
-      <div class="theory-card">
-        <div class="tc-head">// RMS 에너지 & 피크</div>
-        <p>RMS(Root Mean Square)는 오디오 신호의 실효 에너지를 측정해. 0.5초 슬라이딩 윈도우로 RMS가 가장 높은 구간이 '가장 강렬한 부분'으로 추출돼.</p>
-        <div class="tc-formula">RMS = √(Σ x²ᵢ / N)</div>
-      </div>
-      <div class="theory-card">
-        <div class="tc-head">// 비트 시퀀서</div>
-        <p>드럼 머신처럼 16스텝(한 마디)의 격자에 소리를 배치해. 4분음표(4beat), 8분음표(8beat), 16분음표(16beat)로 세분화되고 각 소리가 맡을 역할을 AI가 결정해.</p>
-        <div class="tc-formula">[K][_][S][_][K][_][S][HH]</div>
-      </div>
-      <div class="theory-card">
-        <div class="tc-head">// 다중감각 동기화</div>
-        <p>청각과 시각이 동시에 자극될 때 뇌는 더 강한 몰입감(Multisensory Integration)을 경험해. 80ms 이내의 AV 싱크가 유지되면 인간은 소리와 영상을 '같은 이벤트'로 인식해.</p>
-        <div class="tc-formula">|t_audio - t_video| ≤ 80ms</div>
-      </div>
-      <div class="theory-card">
-        <div class="tc-head">// Gemini AI 역할</div>
-        <p>Gemini 2.5 Pro는 오디오 바이너리를 직접 분석해 악기 분류와 피크 타임스탬프를 JSON으로 반환. Flash 모델은 빠른 응답으로 비트 패턴 설계를 담당해.</p>
-        <div class="tc-formula">audio → Gemini → {instrument, peak_ms, bpm}</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- API KEY -->
   <div class="api-row">
-    <label>GEMINI API KEY</label>
-    <input type="password" id="apiKey" placeholder="AIza...">
+    <input type="password" id="apiKey" placeholder="Gemini API Key를 입력하세요">
   </div>
 
-  <!-- GENERATE -->
   <button class="generate-btn" id="generateBtn" onclick="generateBeat()">
-    <div class="btn-progress" id="btnProgress"></div>
-    <span id="generateLabel">비트 & 영상 생성하기 →</span>
+    비트 생성 및 재생 시작 →
   </button>
 
-  <!-- LOG -->
-  <div class="log-box" id="logBox"></div>
-
+  <div id="logBox" style="margin-top:20px; font-size:11px; color:var(--text-muted); font-family:'Space Mono';"></div>
 </div>
 
-<!-- PLAYBACK OVERLAY -->
 <div id="playOverlay">
-  <div class="play-title">// BEAT IS PLAYING</div>
-  <div class="play-grid" id="playGrid"></div>
-  <button class="play-close" onclick="stopPlayback()">■ STOP</button>
+  <h2 style="margin-bottom:30px; color:var(--green-solid)">BEAT PLAYING...</h2>
+  <div class="play-grid" id="playGrid" style="display:flex; gap:10px;"></div>
+  <button onclick="stopPlayback()" style="margin-top:40px; padding:15px 40px; border-radius:100px; border:1px solid #ccc; background:none; cursor:pointer;">STOP</button>
 </div>
 
 <script>
@@ -871,7 +513,7 @@ Rules:
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.4, maxOutputTokens: 800 }
+      generationConfig: { temperature: 0.4, maxOutputTokens: 800 , response_mime_type: "application/json"}
     })
   });
 
@@ -984,7 +626,7 @@ async function generateBeat() {
   const validIndices = [];
   for (let i = 0; i < NUM; i++) {
     if (!audioRecordings[i]) { analysisResults[i] = null; continue; }
-    log(`🎤 소리 ${i+1} 분석 중... (Gemini 2.5 Pro)`, 'info');
+    log(`🎤 소리 ${i+1} 분석 중... (Gemini 3 Flash)`, 'info');
     try {
       const result = await analyzeAudioWithGemini(audioRecordings[i], i, apiKey);
       analysisResults[i] = result;
