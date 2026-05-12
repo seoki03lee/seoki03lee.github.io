@@ -387,8 +387,8 @@ let isRecordingVideo = Array(NUM).fill(false);
 
 // ── 🔧 FIX: 올바른 Gemini 모델명 ──
 // 구버전 코드에서 gemini-3-flash-preview 사용 → 존재하지 않는 모델명이라 즉시 실패
-const GEMINI_MODEL = 'gemini-2.0-flash';
-const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+const GEMINI_MODEL = 'gemini-3-flash-preview';
+const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
 // ── BUILD SLOTS ──
 const soundSlots = document.getElementById('soundSlots');
