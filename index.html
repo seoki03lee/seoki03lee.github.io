@@ -459,6 +459,8 @@ async function recordAudio(i) {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     initVisualizer();
+    if (analyser) analyser.disconnect(); 
+        
     const src = audioCtx.createMediaStreamSource(stream);
     src.connect(analyser);
 
@@ -917,8 +919,9 @@ async function startPlayback(peakClips, pattern) {
 
   // AudioContext 재설정 (closed일 수 있음)
   if (!audioCtx || audioCtx.state === 'closed') {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
+    analyser.connect(audioCtx.destination); // 재생할 때는 스피커에 연결!
     analyser.fftSize = 128;
     analyser.connect(audioCtx.destination);
   }
