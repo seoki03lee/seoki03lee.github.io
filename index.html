@@ -1,35 +1,30 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>일상속에 비트로</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+<title>일상속의 비트</title> <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg-main: #fcfbf9;
+:root {
+    --bg-main: #fcfbf9; /* 밝은 배경 유지 */
     --bg-sub: #ffffff;
     --black: #1a1a1a;
-    --text-main: #2c3e2c;
-    --text-muted: #809680;
+    --text-main: #2c3e50;
+    --text-muted: #808e9b;
     --green-grad: linear-gradient(135deg, #00f5a0 0%, #00d9e1 100%);
-    --green-solid: #00c896;
+    --green-solid: #00b894;
     --green-dark: #004d3d;
     --border: #e0eae0;
     --red: #ff5252;
     --radius: 20px;
     --shadow: 0 10px 30px rgba(0,0,0,0.05);
-  }
+}
 
 - { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-font-family: ‘Noto Sans KR’, sans-serif;
-background: var(–bg-main);
-color: var(–text-main);
-min-height: 100vh;
-}
+body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg-main); color: var(--text-main); min-height: 100vh; }
+
+.app { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; padding: 40px 20px; }
 
 body::before {
 content: ‘’;
