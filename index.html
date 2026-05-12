@@ -830,7 +830,7 @@ Analyze this 3-second audio clip and return ONLY valid JSON (no markdown, no exp
           { text: prompt }
         ]
       }],
-      generationConfig: { temperature: 0.1, maxOutputTokens: 300 }
+      generationConfig: { temperature: 0.1, maxOutputTokens: 300, response_mime_type: "application/json" }
     })
   });
 
