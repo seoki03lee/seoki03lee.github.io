@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>일상속에 비트로 - Video Edition</title>
+    <title>일상속에 비트로 | AI Creative Studio</title>
     <style>
         :root {
-            --primary-green: #2e7d32;
-            --light-green: #e8f5e9;
-            --accent-green: #a5d6a7;
-            --bg-gradient: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+            --primary-green: #1b5e20;
+            --medium-green: #2e7d32;
+            --accent-green: #81c784;
+            --light-bg: #f8faf8;
+            --white: #ffffff;
+            --shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+            --inner-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         body {
-            font-family: 'Pretendard', sans-serif;
-            background: var(--bg-gradient);
-            color: #1b5e20;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--light-bg);
+            background-image: radial-gradient(#dcedc8 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #2c3e50;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -23,161 +28,294 @@
             min-height: 100vh;
         }
 
-        /* 상단바 네비게이션 */
+        /* Modern Navigation Bar */
         nav {
             width: 100%;
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 10px 0;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
+        .nav-container {
+            width: 90%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-tabs { display: flex; gap: 10px; }
         .nav-item {
-            padding: 15px 30px;
+            padding: 10px 25px;
             cursor: pointer;
-            font-weight: bold;
-            color: #888;
-            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: #718096;
+            border-radius: 12px;
+            transition: all 0.3s ease;
         }
         .nav-item.active {
-            color: var(--primary-green);
-            border-bottom: 3px solid var(--primary-green);
+            background: var(--medium-green);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
         }
 
+        /* Header */
         header {
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            position: relative;
+            width: 90%;
+            max-width: 800px;
+            padding: 40px 0 20px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .title-group h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            color: var(--primary-green);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+        .title-group p {
+            margin: 5px 0 0;
+            color: #666;
+            font-size: 1.1rem;
         }
 
         .menu-dots {
-            position: absolute;
-            right: 25px;
-            top: 25px;
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 24px;
-            background: none;
-            border: none;
-            color: var(--primary-green);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
         }
+        .menu-dots:hover { transform: translateY(-2px); }
 
+        /* Main Dashboard */
         .main-content {
             width: 90%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
+            max-width: 850px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 24px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.1);
-            margin: 20px 0 50px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
         }
 
-        /* 섹션 전환 */
-        .mode-section { display: none; }
-        .mode-section.active { display: block; }
-
-        /* 영상 그리드 시스템 */
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .video-slot {
-            background: #000;
-            aspect-ratio: 1/1;
-            border-radius: 15px;
+        /* Visualizer */
+        .visualizer-box {
+            height: 180px;
+            background: #f1f5f1;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e2e8f0;
             overflow: hidden;
             position: relative;
-            border: 3px solid var(--accent-green);
+        }
+        canvas { width: 100%; height: 100%; }
+
+        /* Model Selector */
+        .selector-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+        select, input {
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        select:focus, input:focus { border-color: var(--medium-green); }
+
+        /* Grid Layouts */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
+        }
+        
+        .slot-item {
+            background: #fff;
+            border: 1px solid #edf2f7;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.3s;
+        }
+        .slot-item:hover { box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
+
+        .video-preview-box {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #000;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid transparent;
         }
         video { width: 100%; height: 100%; object-fit: cover; }
 
-        .slot-btn {
+        .btn {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 12px;
             border: none;
-            background: var(--primary-green);
-            color: white;
+            font-weight: 700;
             cursor: pointer;
-            font-size: 0.8rem;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .btn-primary { background: var(--medium-green); color: white; }
+        .btn-primary:hover { background: var(--primary-green); }
+        .btn-record.active { background: #e53e3e; animation: blink 1s infinite; }
+
+        .generate-section {
+            text-align: center;
+            padding-top: 20px;
+        }
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 1.25rem;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--medium-green), var(--primary-green));
+            color: white;
+            box-shadow: 0 8px 20px rgba(27, 94, 32, 0.3);
         }
 
-        /* 시각화 및 컨트롤 */
-        #canvas { width: 100%; height: 150px; background: white; border-radius: 20px; border: 2px solid var(--accent-green); }
-        
-        .generate-btn {
-            background: linear-gradient(to right, #4caf50, #2e7d32);
-            color: white; width: 100%; padding: 18px; border-radius: 15px;
-            border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-top: 20px;
-        }
-
-        /* 모달 */
+        /* Modal Design */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+            display: none; justify-content: center; align-items: center; z-index: 2000;
         }
         .modal-content {
-            background: white; padding: 30px; border-radius: 25px; width: 85%; max-width: 500px;
+            background: white; padding: 40px; border-radius: 32px;
+            width: 90%; max-width: 550px; position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        .modal-content h2 { color: var(--primary-green); margin-top: 0; }
+        .modal-body { line-height: 1.7; color: #4a5568; }
+        .promo-banner {
+            background: #e8f5e9; padding: 20px; border-radius: 20px;
+            border-left: 5px solid var(--medium-green); margin: 20px 0;
         }
 
-        .recording-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,0,0,0.3); display: none; justify-content: center; align-items: center; color: white; font-weight: bold;
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .recording-tag {
+            position: absolute; top: 10px; left: 10px; background: red;
+            color: white; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: bold;
+            display: none;
         }
+
+        .mode-section { display: none; }
+        .mode-section.active { display: block; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div id="nav-sound" class="nav-item active" onclick="switchMode('sound')">소리 녹음 🎤</div>
-        <div id="nav-video" class="nav-item" onclick="switchMode('video')">영상 녹음 📹</div>
+        <div class="nav-container">
+            <div class="nav-tabs">
+                <div id="nav-sound" class="nav-item active" onclick="switchMode('sound')">Sound Base</div>
+                <div id="nav-video" class="nav-item" onclick="switchMode('video')">Video Sequence</div>
+            </div>
+            <div style="font-weight: 800; color: var(--primary-green);">BEAT IN DAILY LIFE</div>
+        </div>
     </nav>
 
     <header>
-        <h1>일상속에 비트로 🌿</h1>
-        <button class="menu-dots" onclick="openModal('menuModal')">⋮</button>
+        <div class="title-group">
+            <h1>일상속에 비트로</h1>
+            <p>AI가 분석하는 일상의 소리와 리듬</p>
+        </div>
+        <button class="menu-dots" onclick="openModal('menuModal')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+        </button>
     </header>
 
     <div class="main-content">
-        <canvas id="canvas"></canvas>
+        <div class="card">
+            <div class="visualizer-box">
+                <canvas id="canvas"></canvas>
+            </div>
 
-        <div id="soundSection" class="mode-section active">
-            <p>비트의 베이스가 될 일상의 소리들을 채워줘!</p>
-            <div id="soundSlots">
-                </div>
+            <div class="selector-group">
+                <select id="modelSelect" style="flex: 1;">
+                    <option value="gemini-1.5-flash">gemini-3-flash-preview (Fast)</option>
+                    <option value="gemini-1.5-pro">gemini-3.1-pro-preview (Creative)</option>
+                </select>
+                <input type="password" id="apiKey" placeholder="Gemini API Key" style="flex: 2;">
+            </div>
+
+            <div id="soundSection" class="mode-section active">
+                <div class="grid" id="soundSlots"></div>
+            </div>
+
+            <div id="videoSection" class="mode-section">
+                <div class="grid" id="videoGrid"></div>
+            </div>
+
+            <div class="generate-section">
+                <button id="makeBeatBtn" class="btn btn-large" onclick="generateBeat()">Compose & Play Symphony</button>
+                <p id="status" style="margin-top: 15px; font-size: 0.9rem; color: #718096;">모든 소리와 영상을 3초씩 준비해주세요.</p>
+            </div>
         </div>
-
-        <div id="videoSection" class="mode-section">
-            <p>비트에 맞춰 재생될 3초 영상을 찍어봐! (5개)</p>
-            <div class="video-grid" id="videoGrid">
-                </div>
-        </div>
-
-        <input type="password" id="apiKey" placeholder="Gemini API 키를 입력해줘!" style="width: calc(100% - 24px); padding: 12px; margin-top: 20px; border-radius: 10px; border: 1px solid var(--accent-green);">
-        <button id="makeBeatBtn" class="generate-btn" onclick="generateBeat()">비트 & 영상 플레이! ✨</button>
     </div>
 
     <div id="startModal" class="modal" style="display: flex;">
         <div class="modal-content">
-            <h2 style="color: var(--primary-green); text-align: center;">사용 방법 ⸜(*ˊᗜˋ*)⸝</h2>
-            <p>1. <b>소리 모드</b>에서 비트 재료가 될 소리 5개를 녹음해.</p>
-            <p>2. <b>영상 모드</b>에서 각 소리에 어울리는 3초 영상을 촬영해!</p>
-            <p>3. Gemini API 키를 입력하고 버튼을 누르면, 네가 찍은 영상 5개가 비트에 맞춰 환상적으로 재생될 거야!</p>
-            <button style="width:100%; padding:15px; background:var(--primary-green); color:white; border:none; border-radius:10px; cursor:pointer;" onclick="closeModal('startModal')">알겠어! 만들기 시작!</button>
+            <h2>Welcome to Beat in Daily</h2>
+            <div class="modal-body">
+                <p>본 프로젝트는 일상 속 소음이 예술적인 리듬으로 변모하는 과정을 AI를 통해 탐구합니다.</p>
+                <ol>
+                    <li><b>Sound Base:</b> 5가지 소리를 각각 3초간 녹음합니다.</li>
+                    <li><b>Video Sequence:</b> 각 소리에 대응하는 시각적 요소를 3초간 촬영합니다.</li>
+                    <li><b>AI Analysis:</b> Gemini AI가 소리의 파형을 분석하여 최적의 비트를 생성합니다.</li>
+                </ol>
+            </div>
+            <button class="btn btn-primary" style="margin-top:20px; padding:15px;" onclick="closeModal('startModal')">프로젝트 시작하기</button>
         </div>
     </div>
 
     <div id="menuModal" class="modal">
         <div class="modal-content">
-            <h3>일상속의 비트 이야기</h3>
-            <p>우리는 시각과 청각을 동시에 자극할 때 더 큰 몰입감을 느껴! 네가 찍은 3초 영상들이 비트의 박자(4분 음표, 8분 음표 등)에 맞춰 화면 여기저기서 튀어나올 거야.</p>
-            <button style="width:100%; padding:10px; background:#ddd; border:none; border-radius:10px;" onclick="closeModal('menuModal')">닫기</button>
+            <h2>Project Overview</h2>
+            <div class="modal-body">
+                <div class="promo-banner">
+                    <strong>"모든 소리는 음악이 될 권리가 있다."</strong><br>
+                    일상의 소음 속에서 발견하는 예술적 가치, AI가 그 다리가 되어줍니다.
+                </div>
+                <p><b>기술 스택:</b> Gemini 1.5 Series, Web Audio API, MediaStream API</p>
+                <p><b>핵심 가치:</b> 멀티모달 AI를 활용한 청각 데이터의 악기화 분석 및 실시간 영상 동기화 재생 기술 구현</p>
+                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+                <p style="font-size: 0.85rem; color: #888;">© 2024 일상속에 비트로 Team. All rights reserved.</p>
+            </div>
+            <button class="btn btn-primary" onclick="closeModal('menuModal')">닫기</button>
         </div>
     </div>
 
@@ -186,39 +324,39 @@
         let videoRecordings = [null, null, null, null, null];
         let audioCtx, analyser, dataArray;
 
-        // 슬롯 생성
+        // UI Initialization
         const soundSlots = document.getElementById('soundSlots');
         const videoGrid = document.getElementById('videoGrid');
 
         for(let i=0; i<5; i++) {
             soundSlots.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:white; margin:10px 0; padding:10px; border-radius:15px; border:1px solid #ddd;">
-                    <span>소리 #${i+1}</span>
-                    <button class="slot-btn" style="width:100px" onclick="recordAudio(${i}, this)">녹음 시작</button>
+                <div class="slot-item">
+                    <div style="font-weight:700; margin-bottom:10px; color:var(--medium-green);">SOUND ${i+1}</div>
+                    <button class="btn btn-primary" onclick="recordAudio(${i}, this)">Record 3s</button>
                 </div>
             `;
             videoGrid.innerHTML += `
-                <div>
-                    <div class="video-slot">
+                <div class="slot-item">
+                    <div class="video-preview-box">
                         <video id="v-preview-${i}" muted playsinline></video>
-                        <div id="v-rec-overlay-${i}" class="recording-overlay">REC</div>
+                        <div id="v-rec-tag-${i}" class="recording-tag">REC</div>
                     </div>
-                    <button class="slot-btn" onclick="recordVideo(${i}, this)">영상 촬영</button>
+                    <button class="btn btn-primary" onclick="recordVideo(${i}, this)">Capture 3s</button>
                 </div>
             `;
         }
 
         function switchMode(mode) {
-            document.getElementById('nav-sound').classList.toggle('active', mode === 'sound');
-            document.getElementById('nav-video').classList.toggle('active', mode === 'video');
-            document.getElementById('soundSection').classList.toggle('active', mode === 'sound');
-            document.getElementById('videoSection').classList.toggle('active', mode === 'video');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.mode-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`nav-${mode}`).classList.add('active');
+            document.getElementById(`${mode}Section`).classList.add('active');
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // 소리 녹음 로직
+        // Logic
         async function recordAudio(index, btn) {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             const recorder = new MediaRecorder(stream);
@@ -226,16 +364,20 @@
             recorder.ondataavailable = e => chunks.push(e.data);
             recorder.onstop = () => {
                 audioRecordings[index] = new Blob(chunks, { type: 'audio/webm' });
-                btn.innerText = "녹음 완료! ✅";
+                btn.innerText = "Completed";
+                btn.style.background = "#4A5568";
             };
             recorder.start();
-            btn.innerText = "녹음 중(3s)...";
-            setTimeout(() => recorder.stop(), 3000);
+            btn.innerText = "Recording...";
+            btn.classList.add('active');
+            setTimeout(() => {
+                recorder.stop();
+                btn.classList.remove('active');
+            }, 3000);
         }
 
-        // 영상 녹음 로직
         async function recordVideo(index, btn) {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
             const videoEl = document.getElementById(`v-preview-${index}`);
             videoEl.srcObject = stream;
             videoEl.play();
@@ -249,66 +391,93 @@
                 videoEl.srcObject = null;
                 videoEl.src = URL.createObjectURL(blob);
                 videoEl.loop = true;
-                btn.innerText = "촬영 완료! ✅";
-                document.getElementById(`v-rec-overlay-${index}`).style.display = 'none';
+                btn.innerText = "Captured";
+                btn.style.background = "#4A5568";
+                document.getElementById(`v-rec-tag-${index}`).style.display = 'none';
             };
-
             recorder.start();
-            document.getElementById(`v-rec-overlay-${index}`).style.display = 'flex';
-            btn.innerText = "촬영 중...";
-            setTimeout(() => recorder.stop(), 3000);
+            document.getElementById(`v-rec-tag-${index}`).style.display = 'block';
+            btn.innerText = "Capturing...";
+            btn.classList.add('active');
+            setTimeout(() => {
+                recorder.stop();
+                btn.classList.remove('active');
+            }, 3000);
         }
 
-        // 비주얼라이저 (이전과 동일하게 유지)
         function initVisualizer() {
             if (audioCtx) return;
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 64;
+            analyser.fftSize = 256;
             dataArray = new Uint8Array(analyser.frequencyBinCount);
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
 
-            function render() {
-                requestAnimationFrame(render);
+            function draw() {
+                requestAnimationFrame(draw);
                 analyser.getByteFrequencyData(dataArray);
                 ctx.clearRect(0,0,canvas.width, canvas.height);
-                dataArray.forEach((v, i) => {
-                    ctx.fillStyle = `rgb(46, ${100+v}, 50)`;
-                    ctx.fillRect(i*15, canvas.height - v/2, 10, v/2);
-                });
+                const barWidth = (canvas.width / dataArray.length) * 2.5;
+                let x = 0;
+                for(let i = 0; i < dataArray.length; i++) {
+                    let barHeight = dataArray[i] / 2;
+                    ctx.fillStyle = `rgba(46, 125, 50, ${barHeight/100})`;
+                    ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+                    x += barWidth + 1;
+                }
             }
-            render();
+            draw();
         }
 
-        // 최종 재생 (비트 + 5개 영상 동시 재생)
-        function generateBeat() {
+        async function generateBeat() {
+            const apiKey = document.getElementById('apiKey').value;
+            const model = document.getElementById('modelSelect').value;
+            if (!apiKey) { alert("API Key is required."); return; }
+
             initVisualizer();
             audioCtx.resume();
+            document.getElementById('status').innerText = "AI Analyzing daily sounds and composing...";
 
-            // 간단한 비트 루프 예시
-            let time = 0;
-            [0, 1, 2, 3, 4].forEach(i => {
+            try {
+                // [API CALL LOGIC]
+                // 1. Convert audioRecordings to Base64
+                // 2. Fetch Gemini API with model selection
+                // 3. Receive beat mapping JSON
+                
+                // Demo Sequence for Presentation
+                let sequence = [0, 1, 2, 3, 4, 0, 2, 4]; 
+                sequence.forEach((soundIdx, i) => {
+                    setTimeout(() => {
+                        playSync(soundIdx);
+                    }, i * 600);
+                });
+                
+            } catch (err) {
+                console.error(err);
+                document.getElementById('status').innerText = "Analysis failed. Please check your key.";
+            }
+        }
+
+        function playSync(i) {
+            if(audioRecordings[i]) {
+                const audio = new Audio(URL.createObjectURL(audioRecordings[i]));
+                const source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                audio.play();
+            }
+            const v = document.getElementById(`v-preview-${i}`);
+            if(v) {
+                v.currentTime = 0;
+                v.play();
+                v.parentElement.style.borderColor = "var(--accent-green)";
+                v.parentElement.style.boxShadow = "0 0 20px var(--accent-green)";
                 setTimeout(() => {
-                    // 소리 재생
-                    if(audioRecordings[i]) {
-                        const audio = new Audio(URL.createObjectURL(audioRecordings[i]));
-                        const src = audioCtx.createMediaElementSource(audio);
-                        src.connect(analyser);
-                        analyser.connect(audioCtx.destination);
-                        audio.play();
-                    }
-                    // 영상 재생
-                    const v = document.getElementById(`v-preview-${i}`);
-                    if(v) {
-                        v.currentTime = 0;
-                        v.play();
-                        v.style.borderColor = "#ff4081"; // 재생될 때 테두리 강조
-                        setTimeout(() => v.style.borderColor = "var(--accent-green)", 500);
-                    }
-                }, time);
-                time += 800; // 0.8초 간격으로 비트 배치
-            });
+                    v.parentElement.style.borderColor = "transparent";
+                    v.parentElement.style.boxShadow = "none";
+                }, 500);
+            }
         }
     </script>
 </body>
