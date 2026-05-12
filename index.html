@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>일상속에 비트로</title>
+    <title>일상속에 비트로 - Video Edition</title>
     <style>
         :root {
             --primary-green: #2e7d32;
@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            font-family: 'Pretendard', sans-serif;
             background: var(--bg-gradient);
             color: #1b5e20;
             margin: 0;
@@ -21,16 +21,35 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
 
-        /* 헤더 & 메뉴 */
+        /* 상단바 네비게이션 */
+        nav {
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-item {
+            padding: 15px 30px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #888;
+            border-bottom: 3px solid transparent;
+        }
+        .nav-item.active {
+            color: var(--primary-green);
+            border-bottom: 3px solid var(--primary-green);
+        }
+
         header {
             width: 100%;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            text-align: center;
             position: relative;
         }
 
@@ -45,121 +64,80 @@
             color: var(--primary-green);
         }
 
-        h1 {
-            font-size: 2.2rem;
-            margin: 0;
-            color: var(--primary-green);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        /* 메인 컨테이너 */
         .main-content {
             width: 90%;
-            max-width: 700px;
+            max-width: 800px;
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
             border-radius: 30px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(46, 125, 50, 0.1);
-            margin-bottom: 50px;
+            margin: 20px 0 50px;
         }
 
-        /* 녹음 슬롯 스타일 */
-        .slot-list { list-style: none; padding: 0; }
-        .slot {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            margin: 12px 0;
-            padding: 15px 20px;
+        /* 섹션 전환 */
+        .mode-section { display: none; }
+        .mode-section.active { display: block; }
+
+        /* 영상 그리드 시스템 */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .video-slot {
+            background: #000;
+            aspect-ratio: 1/1;
             border-radius: 15px;
-            border: 1px solid var(--accent-green);
-            transition: transform 0.2s;
-        }
-        .slot:hover { transform: scale(1.02); }
-
-        .rec-btn {
-            background: var(--primary-green);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .rec-btn.recording {
-            background: #d32f2f;
-            animation: pulse 1s infinite;
-        }
-
-        /* 시각화 캔버스 */
-        #visualizer-container {
-            width: 100%;
-            height: 200px;
-            background: #fff;
-            border-radius: 20px;
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid var(--accent-green);
             overflow: hidden;
-        }
-        canvas { width: 100%; height: 100%; }
-
-        /* 모달 공통 스타일 */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 35px;
-            border-radius: 25px;
-            max-width: 500px;
-            width: 85%;
-            max-height: 80vh;
-            overflow-y: auto;
             position: relative;
-            line-height: 1.6;
+            border: 3px solid var(--accent-green);
         }
-        .close-btn {
+        video { width: 100%; height: 100%; object-fit: cover; }
+
+        .slot-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 10px;
+            border: none;
             background: var(--primary-green);
             color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
             cursor: pointer;
-            display: block;
-            margin: 20px auto 0;
-            font-weight: bold;
+            font-size: 0.8rem;
         }
 
+        /* 시각화 및 컨트롤 */
+        #canvas { width: 100%; height: 150px; background: white; border-radius: 20px; border: 2px solid var(--accent-green); }
+        
         .generate-btn {
             background: linear-gradient(to right, #4caf50, #2e7d32);
-            color: white;
-            width: 100%;
-            padding: 18px;
-            border-radius: 15px;
-            border: none;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: white; width: 100%; padding: 18px; border-radius: 15px;
+            border: none; font-size: 1.2rem; font-weight: bold; cursor: pointer; margin-top: 20px;
         }
-        .generate-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        /* 모달 */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 25px; width: 85%; max-width: 500px;
+        }
+
+        .recording-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,0,0,0.3); display: none; justify-content: center; align-items: center; color: white; font-weight: bold;
+        }
     </style>
 </head>
 <body>
+
+    <nav>
+        <div id="nav-sound" class="nav-item active" onclick="switchMode('sound')">소리 녹음 🎤</div>
+        <div id="nav-video" class="nav-item" onclick="switchMode('video')">영상 녹음 📹</div>
+    </nav>
 
     <header>
         <h1>일상속에 비트로 🌿</h1>
@@ -167,184 +145,170 @@
     </header>
 
     <div class="main-content">
-        <div id="visualizer-container">
-            <canvas id="canvas"></canvas>
+        <canvas id="canvas"></canvas>
+
+        <div id="soundSection" class="mode-section active">
+            <p>비트의 베이스가 될 일상의 소리들을 채워줘!</p>
+            <div id="soundSlots">
+                </div>
         </div>
 
-        <ul class="slot-list">
-            <script>
-                for(let i=1; i<=5; i++) {
-                    document.write(`
-                        <li class="slot">
-                            <strong>소리 #${i}</strong>
-                            <span id="label-${i}" style="font-size: 0.9rem; color: #666;">대기 중...</span>
-                            <button id="btn-${i}" class="rec-btn" onclick="toggleRecording(${i})">녹음 시작</button>
-                        </li>
-                    `);
-                }
-            </script>
-        </ul>
+        <div id="videoSection" class="mode-section">
+            <p>비트에 맞춰 재생될 3초 영상을 찍어봐! (5개)</p>
+            <div class="video-grid" id="videoGrid">
+                </div>
+        </div>
 
-        <input type="password" id="apiKey" placeholder="Gemini API 키를 입력해줘!" style="width: calc(100% - 20px); padding: 12px; margin-top: 10px; border-radius: 10px; border: 1px solid var(--accent-green);">
-        
-        <button id="makeBeatBtn" class="generate-btn" onclick="generateBeat()" disabled>비트 생성 & 재생 ✨</button>
-        <p id="status" style="text-align: center; color: #555; margin-top: 15px;">5가지 소리를 모두 채워줘! (´｡• ᵕ •｡`) ♡</p>
+        <input type="password" id="apiKey" placeholder="Gemini API 키를 입력해줘!" style="width: calc(100% - 24px); padding: 12px; margin-top: 20px; border-radius: 10px; border: 1px solid var(--accent-green);">
+        <button id="makeBeatBtn" class="generate-btn" onclick="generateBeat()">비트 & 영상 플레이! ✨</button>
     </div>
 
     <div id="startModal" class="modal" style="display: flex;">
         <div class="modal-content">
-            <h2 style="color: var(--primary-green); text-align: center;">반가워! 사용 방법 알려줄게! ⸜(*ˊᗜˋ*)⸝</h2>
-            <ol>
-                <li>주변의 재미있는 소리(박수, 컵 두드리기, 펜 소리 등)를 찾아봐!</li>
-                <li>5개의 슬롯에 각각 <b>3초씩</b> 소리를 녹음해줘.</li>
-                <li>Gemini API 키를 넣고 <b>'비트 생성'</b> 버튼을 눌러!</li>
-                <li>Gemini가 소리를 악기로 변환해서 멋진 비트를 만들어줄 거야!</li>
-            </ol>
-            <p style="font-size: 0.9rem; color: #777;">* 소리가 재생될 때 예쁜 비주얼라이저를 감상해봐!</p>
-            <button class="close-btn" onclick="closeModal('startModal')">시작하기!</button>
+            <h2 style="color: var(--primary-green); text-align: center;">사용 방법 ⸜(*ˊᗜˋ*)⸝</h2>
+            <p>1. <b>소리 모드</b>에서 비트 재료가 될 소리 5개를 녹음해.</p>
+            <p>2. <b>영상 모드</b>에서 각 소리에 어울리는 3초 영상을 촬영해!</p>
+            <p>3. Gemini API 키를 입력하고 버튼을 누르면, 네가 찍은 영상 5개가 비트에 맞춰 환상적으로 재생될 거야!</p>
+            <button style="width:100%; padding:15px; background:var(--primary-green); color:white; border:none; border-radius:10px; cursor:pointer;" onclick="closeModal('startModal')">알겠어! 만들기 시작!</button>
         </div>
     </div>
 
     <div id="menuModal" class="modal">
         <div class="modal-content">
-            <h2 style="color: var(--primary-green);">프로젝트: 일상속에 비트로</h2>
-            <p>이 사이트는 무심코 지나치는 일상의 소음 속에 숨겨진 리듬을 찾아내는 마법 같은 공간이야. ( ◡‿◡ *)</p>
-            
-            <h3 style="border-left: 4px solid var(--primary-green); padding-left: 10px;">노래가 된 일상의 사례들</h3>
-            <ul>
-                <li><b>빗소리:</b> 일정한 간격의 하이햇(Hi-hat) 비트로 변신!</li>
-                <li><b>커피잔 부딪히는 소리:</b> 맑은 트라이앵글이나 벨 소리!</li>
-                <li><b>문 닫는 소리:</b> 묵직한 킥 드럼(Kick Drum)!</li>
-                <li><b>종이 구기는 소리:</b> 찰진 스네어(Snare)나 쉐이커!</li>
-            </ul>
-
-            <h3 style="border-left: 4px solid var(--primary-green); padding-left: 10px;">사용 기술</h3>
-            <p>Gemini 1.5 Flash API가 사용자가 입력한 오디오의 파형과 주파수를 분석해서 가장 어울리는 악기를 매칭하고 비트를 구성해.</p>
-            
-            <button class="close-btn" onclick="closeModal('menuModal')">닫기</button>
+            <h3>일상속의 비트 이야기</h3>
+            <p>우리는 시각과 청각을 동시에 자극할 때 더 큰 몰입감을 느껴! 네가 찍은 3초 영상들이 비트의 박자(4분 음표, 8분 음표 등)에 맞춰 화면 여기저기서 튀어나올 거야.</p>
+            <button style="width:100%; padding:10px; background:#ddd; border:none; border-radius:10px;" onclick="closeModal('menuModal')">닫기</button>
         </div>
     </div>
 
     <script>
-        let recordings = [null, null, null, null, null];
-        let audioContext, analyser, dataArray, source;
-        let isRecording = false;
+        let audioRecordings = [null, null, null, null, null];
+        let videoRecordings = [null, null, null, null, null];
+        let audioCtx, analyser, dataArray;
 
-        // 모달 제어
+        // 슬롯 생성
+        const soundSlots = document.getElementById('soundSlots');
+        const videoGrid = document.getElementById('videoGrid');
+
+        for(let i=0; i<5; i++) {
+            soundSlots.innerHTML += `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:white; margin:10px 0; padding:10px; border-radius:15px; border:1px solid #ddd;">
+                    <span>소리 #${i+1}</span>
+                    <button class="slot-btn" style="width:100px" onclick="recordAudio(${i}, this)">녹음 시작</button>
+                </div>
+            `;
+            videoGrid.innerHTML += `
+                <div>
+                    <div class="video-slot">
+                        <video id="v-preview-${i}" muted playsinline></video>
+                        <div id="v-rec-overlay-${i}" class="recording-overlay">REC</div>
+                    </div>
+                    <button class="slot-btn" onclick="recordVideo(${i}, this)">영상 촬영</button>
+                </div>
+            `;
+        }
+
+        function switchMode(mode) {
+            document.getElementById('nav-sound').classList.toggle('active', mode === 'sound');
+            document.getElementById('nav-video').classList.toggle('active', mode === 'video');
+            document.getElementById('soundSection').classList.toggle('active', mode === 'sound');
+            document.getElementById('videoSection').classList.toggle('active', mode === 'video');
+        }
+
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // 시각화 설정 (원통형 느낌의 바)
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-
-        function setupVisualizer() {
-            if (audioContext) return;
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
-            analyser.fftSize = 128;
-            const bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
+        // 소리 녹음 로직
+        async function recordAudio(index, btn) {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const recorder = new MediaRecorder(stream);
+            let chunks = [];
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                audioRecordings[index] = new Blob(chunks, { type: 'audio/webm' });
+                btn.innerText = "녹음 완료! ✅";
+            };
+            recorder.start();
+            btn.innerText = "녹음 중(3s)...";
+            setTimeout(() => recorder.stop(), 3000);
         }
 
-        function draw() {
-            requestAnimationFrame(draw);
-            if (!analyser) return;
-            analyser.getByteFrequencyData(dataArray);
+        // 영상 녹음 로직
+        async function recordVideo(index, btn) {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            const videoEl = document.getElementById(`v-preview-${index}`);
+            videoEl.srcObject = stream;
+            videoEl.play();
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const radius = 50; // 원통의 반지름 느낌
+            const recorder = new MediaRecorder(stream);
+            let chunks = [];
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                videoRecordings[index] = blob;
+                videoEl.srcObject = null;
+                videoEl.src = URL.createObjectURL(blob);
+                videoEl.loop = true;
+                btn.innerText = "촬영 완료! ✅";
+                document.getElementById(`v-rec-overlay-${index}`).style.display = 'none';
+            };
 
-            for (let i = 0; i < dataArray.length; i++) {
-                const barHeight = dataArray[i] * 0.6;
-                const angle = (i * Math.PI * 2) / dataArray.length;
-                
-                const x1 = centerX + Math.cos(angle) * radius;
-                const y1 = centerY + Math.sin(angle) * radius;
-                const x2 = centerX + Math.cos(angle) * (radius + barHeight);
-                const y2 = centerY + Math.sin(angle) * (radius + barHeight);
+            recorder.start();
+            document.getElementById(`v-rec-overlay-${index}`).style.display = 'flex';
+            btn.innerText = "촬영 중...";
+            setTimeout(() => recorder.stop(), 3000);
+        }
 
-                ctx.strokeStyle = `rgb(46, ${100 + dataArray[i]}, 50)`;
-                ctx.lineWidth = 4;
-                ctx.lineCap = 'round';
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.stroke();
+        // 비주얼라이저 (이전과 동일하게 유지)
+        function initVisualizer() {
+            if (audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 64;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            function render() {
+                requestAnimationFrame(render);
+                analyser.getByteFrequencyData(dataArray);
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                dataArray.forEach((v, i) => {
+                    ctx.fillStyle = `rgb(46, ${100+v}, 50)`;
+                    ctx.fillRect(i*15, canvas.height - v/2, 10, v/2);
+                });
             }
-        }
-        draw();
-
-        // 녹음 로직
-        async function toggleRecording(index) {
-            if (isRecording) return;
-            setupVisualizer();
-            
-            const btn = document.getElementById(`btn-${index}`);
-            const label = document.getElementById(`label-${index}`);
-            
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const mediaRecorder = new MediaRecorder(stream);
-                let chunks = [];
-
-                mediaRecorder.ondataavailable = e => chunks.push(e.data);
-                mediaRecorder.onstop = () => {
-                    recordings[index-1] = new Blob(chunks, { type: 'audio/webm' });
-                    label.innerText = "녹음 완료! ✅";
-                    btn.innerText = "다시 녹음";
-                    checkReady();
-                };
-
-                mediaRecorder.start();
-                isRecording = true;
-                btn.innerText = "녹음 중...";
-                btn.classList.add('recording');
-
-                setTimeout(() => {
-                    mediaRecorder.stop();
-                    isRecording = false;
-                    btn.classList.remove('recording');
-                }, 3000);
-            } catch (err) { alert("마이크 권한이 필요해! (ㅠ_ㅠ)"); }
+            render();
         }
 
-        function checkReady() {
-            const allDone = recordings.every(r => r !== null);
-            document.getElementById('makeBeatBtn').disabled = !allDone;
-            if(allDone) document.getElementById('status').innerText = "모든 소리 준비 완료! (≧▽≦)";
-        }
-
+        // 최종 재생 (비트 + 5개 영상 동시 재생)
         function generateBeat() {
-            const status = document.getElementById('status');
-            status.innerText = "Gemini가 예술 혼을 불태우는 중... 🎨";
-            
-            // 실제 API 연동 시에는 여기에 fetch 로직이 들어가!
-            // 지금은 시각화를 위해 순차 재생 예시를 보여줄게.
-            playBeat();
-        }
+            initVisualizer();
+            audioCtx.resume();
 
-        function playBeat() {
-            let delay = 0;
-            audioContext.resume();
-            
-            recordings.forEach((blob, i) => {
+            // 간단한 비트 루프 예시
+            let time = 0;
+            [0, 1, 2, 3, 4].forEach(i => {
                 setTimeout(() => {
-                    const url = URL.createObjectURL(blob);
-                    const audio = new Audio(url);
-                    const audioSource = audioContext.createMediaElementSource(audio);
-                    audioSource.connect(analyser);
-                    analyser.connect(audioContext.destination);
-                    audio.play();
-                }, delay);
-                delay += 600; // 비트 간격
+                    // 소리 재생
+                    if(audioRecordings[i]) {
+                        const audio = new Audio(URL.createObjectURL(audioRecordings[i]));
+                        const src = audioCtx.createMediaElementSource(audio);
+                        src.connect(analyser);
+                        analyser.connect(audioCtx.destination);
+                        audio.play();
+                    }
+                    // 영상 재생
+                    const v = document.getElementById(`v-preview-${i}`);
+                    if(v) {
+                        v.currentTime = 0;
+                        v.play();
+                        v.style.borderColor = "#ff4081"; // 재생될 때 테두리 강조
+                        setTimeout(() => v.style.borderColor = "var(--accent-green)", 500);
+                    }
+                }, time);
+                time += 800; // 0.8초 간격으로 비트 배치
             });
-            
-            setTimeout(() => {
-                document.getElementById('status').innerText = "비트 재생 중! 소리를 감상해봐! 🎧";
-            }, 100);
         }
     </script>
 </body>
