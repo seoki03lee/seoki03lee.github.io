@@ -717,6 +717,15 @@ body::before {
 </div>
 
 <script>
+// ═══════════════════════════════════════════════════════════
+//  iOS Safari 완전 호환 오디오 엔진
+//  핵심 원칙:
+//  1. AudioContext는 유저 터치 직접 핸들러 안에서 생성/resume
+//  2. decodeAudioData는 Promise+Callback 양쪽 지원
+//  3. MediaRecorder 미지원 시 ScriptProcessor로 PCM 직접 녹음
+//  4. 모든 오디오 노드는 반드시 destination까지 연결
+// ═══════════════════════════════════════════════════════════
+
 // ── TAB SWITCH ──
 function switchTab(name) {
   document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
@@ -729,12 +738,13 @@ function switchTab(name) {
 
 // ── STATE ──
 const NUM = 5;
-let audioRecordings = Array(NUM).fill(null);
-let videoRecordings = Array(NUM).fill(null);
-let analysisResults = Array(NUM).fill(null);
-let beatPattern = null;
-let audioCtx = null, analyser = null;
-let playTimers = [];
+let audioRecordings  = Array(NUM).fill(null); // Blob (WAV on iOS, webm elsewhere)
+let videoRecordings  = Array(NUM).fill(null);
+let analysisResults  = Array(NUM).fill(null);
+let beatPattern      = null;
+let audioCtx         = null;
+let analyserNode     = null;
+let playTimers       = [];
 let isRecordingAudio = Array(NUM).fill(false);
 let isRecordingVideo = Array(NUM).fill(false);
 
@@ -750,10 +760,47 @@ function updateModelBadge() {
   document.getElementById('modelBadge').textContent = MODEL_INFO[sel] || sel;
 }
 
+// ── iOS 감지 ──
+const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const needsPCMRecord = isIOS || (isSafari && !window.MediaRecorder);
+
+// ── AudioContext 초기화 (반드시 유저 액션 안에서) ──
+function ensureAudioCtx() {
+  if (!audioCtx || audioCtx.state === 'closed') {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AC();
+    analyserNode = audioCtx.createAnalyser();
+    analyserNode.fftSize = 128;
+    analyserNode.connect(audioCtx.destination); // analyser → destination
+  }
+  // iOS: suspended 상태면 resume (유저 액션 컨텍스트 안에서만 가능)
+  if (audioCtx.state === 'suspended') {
+    return audioCtx.resume();
+  }
+  return Promise.resolve();
+}
+
+// ── decodeAudioData 크로스브라우저 (iOS 구버전은 Promise 미지원) ──
+function decodeAudio(arrayBuffer) {
+  return new Promise((resolve, reject) => {
+    // 새 AudioContext 사용 (iOS에서 state 문제 우회)
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const tmpCtx = new AC();
+    const cb = (buf) => { tmpCtx.close(); resolve(buf); };
+    const eb = (e)   => { tmpCtx.close(); reject(e); };
+    const result = tmpCtx.decodeAudioData(arrayBuffer, cb, eb);
+    // 최신 브라우저는 Promise 반환하기도 함
+    if (result && typeof result.then === 'function') {
+      result.then(buf => { tmpCtx.close(); resolve(buf); }).catch(eb);
+    }
+  });
+}
+
 // ── BUILD SLOTS ──
 const soundSlots = document.getElementById('soundSlots');
 const soundNames = ['소리 #1', '소리 #2', '소리 #3', '소리 #4', '소리 #5'];
-
 for (let i = 0; i < NUM; i++) {
   soundSlots.insertAdjacentHTML('beforeend', `
     <div class="sound-slot" id="ss-${i}">
@@ -769,19 +816,16 @@ for (let i = 0; i < NUM; i++) {
 }
 
 // ── VISUALIZER ──
+let vizRunning = false;
 function initVisualizer() {
-  if (audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  analyser = audioCtx.createAnalyser();
-  analyser.fftSize = 128;
-  analyser.connect(audioCtx.destination);
-
-  const data = new Uint8Array(analyser.frequencyBinCount);
+  if (vizRunning) return;
+  vizRunning = true;
   const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
+  const ctx2   = canvas.getContext('2d');
+  const data   = new Uint8Array(analyserNode ? analyserNode.frequencyBinCount : 64);
 
   function resize() {
-    canvas.width = canvas.offsetWidth * devicePixelRatio;
+    canvas.width  = canvas.offsetWidth  * devicePixelRatio;
     canvas.height = canvas.offsetHeight * devicePixelRatio;
   }
   resize();
@@ -789,29 +833,95 @@ function initVisualizer() {
 
   function draw() {
     requestAnimationFrame(draw);
-    analyser.getByteFrequencyData(data);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!analyserNode) return;
+    analyserNode.getByteFrequencyData(data);
+    ctx2.clearRect(0, 0, canvas.width, canvas.height);
     const W = canvas.width, H = canvas.height;
     const bw = W / data.length;
     data.forEach((v, i) => {
       const pct = v / 255;
-      const h = pct * H;
-      const g = ctx.createLinearGradient(0, H - h, 0, H);
+      const h   = pct * H;
+      const g   = ctx2.createLinearGradient(0, H - h, 0, H);
       g.addColorStop(0, `rgba(0,180,100,${0.5 + pct * 0.5})`);
       g.addColorStop(1, 'rgba(0,100,60,0.2)');
-      ctx.fillStyle = g;
-      ctx.fillRect(i * bw + 1, H - h, bw - 2, h);
+      ctx2.fillStyle = g;
+      ctx2.fillRect(i * bw + 1, H - h, bw - 2, h);
     });
   }
   draw();
+}
+
+// ── PCM 녹음 (iOS Safari / MediaRecorder 미지원 환경) ──
+function recordPCM(stream, durationMs) {
+  return new Promise((resolve, reject) => {
+    const AC  = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    const src = ctx.createMediaStreamSource(stream);
+    const bufSize = 4096;
+    const proc = ctx.createScriptProcessor(bufSize, 1, 1);
+    const chunks = [];
+
+    proc.onaudioprocess = (e) => {
+      const ch = e.inputBuffer.getChannelData(0);
+      chunks.push(new Float32Array(ch));
+    };
+    src.connect(proc);
+    proc.connect(ctx.destination);
+
+    setTimeout(() => {
+      proc.disconnect();
+      src.disconnect();
+      stream.getTracks().forEach(t => t.stop());
+
+      const sampleRate   = ctx.sampleRate;
+      const totalSamples = chunks.reduce((a, c) => a + c.length, 0);
+      const merged       = new Float32Array(totalSamples);
+      let offset = 0;
+      chunks.forEach(c => { merged.set(c, offset); offset += c.length; });
+
+      ctx.close();
+      resolve(float32ToWavBlob(merged, sampleRate));
+    }, durationMs);
+  });
+}
+
+// ── Float32 → WAV Blob ──
+function float32ToWavBlob(samples, sampleRate) {
+  const dataLen = samples.length * 2;
+  const ab      = new ArrayBuffer(44 + dataLen);
+  const view    = new DataView(ab);
+  const ws = (o, s) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+  ws(0, 'RIFF'); view.setUint32(4, 36 + dataLen, true);
+  ws(8, 'WAVE'); ws(12, 'fmt ');
+  view.setUint32(16, 16, true); view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true); ws(36, 'data');
+  view.setUint32(40, dataLen, true);
+  let off = 44;
+  for (let i = 0; i < samples.length; i++) {
+    const s = Math.max(-1, Math.min(1, samples[i]));
+    view.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+    off += 2;
+  }
+  return new Blob([ab], { type: 'audio/wav' });
+}
+
+function getSupportedMimeType(types) {
+  if (!window.MediaRecorder) return '';
+  for (const t of types) {
+    if (t === '' || MediaRecorder.isTypeSupported(t)) return t;
+  }
+  return '';
 }
 
 // ── AUDIO RECORD ──
 async function recordAudio(i) {
   if (isRecordingAudio[i]) return;
   isRecordingAudio[i] = true;
-  const btn = document.getElementById(`ss-btn-${i}`);
-  const slot = document.getElementById(`ss-${i}`);
+
+  const btn    = document.getElementById(`ss-btn-${i}`);
+  const slot   = document.getElementById(`ss-${i}`);
   const status = document.getElementById(`ss-status-${i}`);
 
   btn.textContent = '3s...';
@@ -822,17 +932,15 @@ async function recordAudio(i) {
   status.className = 'slot-status';
 
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    // ① 유저 액션 안에서 AudioContext 먼저 초기화
+    await ensureAudioCtx();
     initVisualizer();
-    if (analyser) analyser.disconnect(); 
-    const src = audioCtx.createMediaStreamSource(stream);
-    src.connect(analyser);
 
-    const mimeType = getSupportedMimeType(['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg', '']);
-    const recOpts = mimeType ? { mimeType } : {};
-    const rec = new MediaRecorder(stream, recOpts);
-    const chunks = [];
-    rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+
+    // 마이크 → 시각화
+    const micSrc = audioCtx.createMediaStreamSource(stream);
+    micSrc.connect(analyserNode);
 
     let secs = 3;
     const tick = setInterval(() => {
@@ -840,37 +948,47 @@ async function recordAudio(i) {
       if (secs > 0) btn.textContent = `${secs}s...`;
     }, 1000);
 
-    rec.onstop = () => {
-      clearInterval(tick);
-      stream.getTracks().forEach(t => t.stop());
-      audioRecordings[i] = new Blob(chunks, { type: rec.mimeType || 'audio/webm' });
-      btn.textContent = '✓ 완료';
-      btn.classList.remove('recording');
-      btn.classList.add('done');
-      slot.classList.remove('recording');
-      slot.classList.add('done');
-      status.textContent = '녹음 완료 · AI 분석 대기';
-      status.className = 'slot-status ok';
-      isRecordingAudio[i] = false;
-    };
+    let blob;
+    if (needsPCMRecord || !window.MediaRecorder) {
+      // iOS Safari: ScriptProcessor로 PCM 직접 수집
+      status.textContent = '녹음 중 (iOS 모드)...';
+      blob = await recordPCM(stream, 3000);
+    } else {
+      // Chrome / Firefox: MediaRecorder
+      const mimeType = getSupportedMimeType(['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg', '']);
+      const rec    = new MediaRecorder(stream, mimeType ? { mimeType } : {});
+      const chunks = [];
+      rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+      blob = await new Promise(res => {
+        rec.onstop = () => {
+          stream.getTracks().forEach(t => t.stop());
+          res(new Blob(chunks, { type: rec.mimeType || 'audio/webm' }));
+        };
+        rec.start();
+        setTimeout(() => rec.stop(), 3000);
+      });
+    }
 
-    rec.start();
-    setTimeout(() => rec.stop(), 3000);
+    clearInterval(tick);
+    micSrc.disconnect();
+
+    audioRecordings[i] = blob;
+    btn.textContent = '✓ 완료';
+    btn.classList.remove('recording');
+    btn.classList.add('done');
+    slot.classList.remove('recording');
+    slot.classList.add('done');
+    status.textContent = '녹음 완료 · AI 분석 대기';
+    status.className = 'slot-status ok';
+
   } catch(e) {
     btn.textContent = 'ERROR';
     btn.classList.remove('recording');
     slot.classList.remove('recording');
-    status.textContent = '마이크 권한 필요: ' + e.message;
+    status.textContent = '마이크 오류: ' + e.message;
     status.className = 'slot-status err';
-    isRecordingAudio[i] = false;
   }
-}
-
-function getSupportedMimeType(types) {
-  for (const t of types) {
-    if (t === '' || MediaRecorder.isTypeSupported(t)) return t;
-  }
-  return '';
+  isRecordingAudio[i] = false;
 }
 
 // ── VIDEO RECORD ──
@@ -892,53 +1010,66 @@ async function recordVideo(i) {
     box.classList.add('recording');
     box.classList.remove('done');
     btn.textContent = '촬영 중 3s';
-    ov.style.display = 'none';
+    if (ov) ov.style.display = 'none';
 
     const mimeType = getSupportedMimeType(['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4', '']);
-    const recOpts = mimeType ? { mimeType } : {};
-    const rec = new MediaRecorder(stream, recOpts);
+    const rec    = window.MediaRecorder ? new MediaRecorder(stream, mimeType ? { mimeType } : {}) : null;
     const chunks = [];
-    rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
 
     let secs = 3;
     const tick = setInterval(() => { secs--; if (secs >= 0) btn.textContent = `촬영 중 ${secs}s`; }, 1000);
 
-    rec.onstop = () => {
-      clearInterval(tick);
-      stream.getTracks().forEach(t => t.stop());
-      const blob = new Blob(chunks, { type: rec.mimeType || 'video/webm' });
-      videoRecordings[i] = blob;
-      vid.srcObject = null;
-      vid.src = URL.createObjectURL(blob);
-      vid.loop = true; vid.muted = true; vid.play();
-      box.classList.remove('recording');
-      box.classList.add('done');
-      btn.textContent = '✓ 촬영 완료';
-      btn.classList.add('done');
-      isRecordingVideo[i] = false;
-    };
-
-    rec.start();
-    setTimeout(() => rec.stop(), 3000);
+    if (rec) {
+      rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+      rec.onstop = () => {
+        clearInterval(tick);
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(chunks, { type: rec.mimeType || 'video/webm' });
+        videoRecordings[i] = blob;
+        vid.srcObject = null;
+        vid.src = URL.createObjectURL(blob);
+        vid.loop = true; vid.muted = true; vid.play();
+        box.classList.remove('recording'); box.classList.add('done');
+        btn.textContent = '✓ 촬영 완료'; btn.classList.add('done');
+        isRecordingVideo[i] = false;
+      };
+      rec.start();
+      setTimeout(() => rec.stop(), 3000);
+    } else {
+      // iOS 비디오: MediaRecorder 미지원
+      setTimeout(() => {
+        clearInterval(tick);
+        stream.getTracks().forEach(t => t.stop());
+        vid.srcObject = null;
+        box.classList.remove('recording');
+        btn.textContent = '⚠ iOS 비디오 미지원';
+        isRecordingVideo[i] = false;
+      }, 3000);
+    }
   } catch(e) {
-    btn.textContent = '오류';
+    btn.textContent = '카메라 오류';
     box.classList.remove('recording');
-    ov.textContent = '카메라 권한 필요';
-    ov.style.display = 'flex';
     isRecordingVideo[i] = false;
   }
 }
 
+// ── Blob → Base64 ──
+function blobToBase64(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
+}
+
 function safeParseJSON(text) {
-    try {
-        let cleanText = text.replace(/```json|```/g, "").trim();
-        const match = cleanText.match(/\{[\s\S]*\}/);
-        if (match) return JSON.parse(match[0]);
-        return JSON.parse(cleanText);
-    } catch (e) {
-        console.error("JSON 파싱 실패:", e, "원본 텍스트:", text);
-        throw new Error("JSON 추출 실패: " + e.message);
-    }
+  try {
+    let clean = text.replace(/```json|```/g, '').trim();
+    const m = clean.match(/\{[\s\S]*\}/);
+    if (m) return JSON.parse(m[0]);
+    return JSON.parse(clean);
+  } catch(e) { throw new Error('JSON 추출 실패: ' + e.message); }
 }
 
 function log(msg, type = '') {
@@ -956,224 +1087,139 @@ function setProgress(pct) {
   document.getElementById('btnProgress').style.width = pct + '%';
 }
 
-function blobToBase64(blob) {
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = () => res(r.result.split(',')[1]);
-    r.onerror = rej;
-    r.readAsDataURL(blob);
-  });
-}
-
-function extractJSON(text) {
-    try {
-        const match = text.match(/\{[\s\S]*\}/);
-        if (match) return JSON.parse(match[0]);
-        return JSON.parse(text);
-    } catch (e) {
-        throw new Error("JSON 추출 실패: " + e.message);
-    }
-}
-
+// ── Gemini: 오디오 분석 ──
 async function analyzeAudioWithGemini(blob, index, apiKey) {
-  const b64 = await blobToBase64(blob);
-  const mimeType = blob.type || 'audio/webm';
+  const b64      = await blobToBase64(blob);
+  const mimeType = blob.type.includes('wav') ? 'audio/wav' : (blob.type || 'audio/webm');
 
   const prompt = `You are an audio analysis AI for a music beat generator app.
-Analyze this 3-second audio clip and return ONLY valid JSON (no markdown, no explanation):
+Analyze this audio clip and return ONLY valid JSON (no markdown, no explanation):
 {
-  "instrument": "<Korean instrument name, e.g. 킥드럼, 스네어, 하이햇, 베이스, 박수, 목소리, 발걸음, 연필소리, etc>",
-  "instrument_en": "<English role: kick | snare | hihat | bass | perc | vocal | fx>",
-  "peak_ms": <integer millisecond 0-2500 where audio energy peaks>,
-  "energy": <float 0.0-1.0 overall loudness>,
-  "description": "<Korean 1-sentence description of the sound>"
+  "instrument": "<Korean name e.g. 킥드럼, 스네어, 하이햇, 박수, 발걸음>",
+  "instrument_en": "<English role: kick|snare|hihat|bass|perc|vocal|fx>",
+  "peak_ms": <integer ms 0-2500 where energy peaks>,
+  "energy": <float 0.0-1.0>,
+  "description": "<Korean 1-sentence>"
 }`;
 
-  const url = `${GEMINI_API_BASE}/${getModel()}:generateContent?key=${apiKey}`;
-  const response = await fetch(url, {
+  const url  = `${GEMINI_API_BASE}/${getModel()}:generateContent?key=${apiKey}`;
+  const resp = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      contents: [{
-        parts: [
-          { inline_data: { mime_type: mimeType, data: b64 } },
-          { text: prompt }
-        ]
-      }],
-      generationConfig: { temperature: 0.1, response_mime_type: "application/json" }
+      contents: [{ parts: [
+        { inline_data: { mime_type: mimeType, data: b64 } },
+        { text: prompt }
+      ]}],
+      generationConfig: { temperature: 0.1, response_mime_type: 'application/json' }
     })
   });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Gemini API ${response.status}: ${errText.slice(0, 200)}`);
-  }
-
-  const data = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  return safeParseJSON(text);
+  if (!resp.ok) { const t = await resp.text(); throw new Error(`Gemini ${resp.status}: ${t.slice(0,200)}`); }
+  const data = await resp.json();
+  return safeParseJSON(data.candidates?.[0]?.content?.parts?.[0]?.text || '{}');
 }
 
+// ── Gemini: 비트 설계 ──
 async function designBeatWithGemini(analyses, apiKey) {
-  const prompt = `You are a music producer AI. Given these sound analyses, design a beat pattern.
-
+  const prompt = `You are a music producer AI. Design a beat pattern.
 Sounds: ${JSON.stringify(analyses)}
-
-Return ONLY valid JSON (no markdown):
+Return ONLY valid JSON:
 {
-  "bpm": <integer 80-140>,
-  "description": "<Korean 2-sentence description of the beat style>",
+  "bpm": <80-140>,
+  "description": "<Korean 2 sentences>",
   "sequence": [
-    {"step": 0, "sound_index": <0-4>, "beat_type": "<kick|snare|hihat|perc>", "velocity": <0.5-1.0>},
-    ...
+    {"step":<0-15>,"sound_index":<0-4>,"beat_type":"<kick|snare|hihat|perc>","velocity":<0.5-1.0>}
   ]
 }
+Rules: 8-16 steps total. Bass/kick on 0,4,8,12. Snare on 4,12. Hihat on 2,6,10,14.`;
 
-Rules:
-- sequence should have 8-16 steps total for one loop
-- step goes 0-15 (16-step grid, each = 1/16 note)
-- Use the most bass-like sound on steps 0,4,8,12
-- Use snare-like sound on steps 4,12
-- Use hihat-like sound on steps 2,6,10,14
-- Fill remaining with other sounds creatively
-- Make it a proper hip-hop or electronic beat`;
-
-  const url = `${GEMINI_API_BASE}/${getModel()}:generateContent?key=${apiKey}`;
-  const response = await fetch(url, {
+  const url  = `${GEMINI_API_BASE}/${getModel()}:generateContent?key=${apiKey}`;
+  const resp = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.4, response_mime_type: "application/json" }
+      generationConfig: { temperature: 0.4, response_mime_type: 'application/json' }
     })
   });
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Gemini API ${response.status}: ${errText.slice(0, 200)}`);
-  }
-
-  const data = await response.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  return extractJSON(text);
+  if (!resp.ok) { const t = await resp.text(); throw new Error(`Gemini ${resp.status}: ${t.slice(0,200)}`); }
+  const data = await resp.json();
+  return safeParseJSON(data.candidates?.[0]?.content?.parts?.[0]?.text || '{}');
 }
 
+// ── 피크 구간 추출 → WAV Blob ──
 async function extractPeakClip(blob, peakMs) {
-  const arrayBuffer = await blob.arrayBuffer();
-  let decodedBuffer;
   try {
-    const tempCtx = new AudioContext();
-    decodedBuffer = await tempCtx.decodeAudioData(arrayBuffer.slice(0));
-    tempCtx.close();
+    const ab  = await blob.arrayBuffer();
+    const buf = await decodeAudio(ab.slice(0));
+
+    const sr      = buf.sampleRate;
+    const start   = Math.floor((peakMs / 1000) * sr);
+    const clipLen = Math.floor(0.5 * sr);
+    const end     = Math.min(start + clipLen, buf.length);
+    const actual  = end - start;
+    if (actual <= 0) return blob;
+
+    const AC      = window.AudioContext || window.webkitAudioContext;
+    const offCtx  = new OfflineAudioContext(buf.numberOfChannels, actual, sr);
+    const offBuf  = offCtx.createBuffer(buf.numberOfChannels, actual, sr);
+    for (let ch = 0; ch < buf.numberOfChannels; ch++) {
+      offBuf.copyToChannel(buf.getChannelData(ch).slice(start, end), ch);
+    }
+    const src = offCtx.createBufferSource();
+    src.buffer = offBuf;
+    src.connect(offCtx.destination);
+    src.start();
+    const rendered = await offCtx.startRendering();
+
+    // AudioBuffer → WAV
+    const nCh = rendered.numberOfChannels;
+    const len  = rendered.length;
+    const pcm  = new Float32Array(len * nCh);
+    for (let ch = 0; ch < nCh; ch++) {
+      const cd = rendered.getChannelData(ch);
+      for (let j = 0; j < len; j++) pcm[j * nCh + ch] = cd[j];
+    }
+    return float32ToWavBlob(pcm, sr); // ← 항상 WAV 반환 (iOS 호환)
   } catch(e) {
-    log(`⚠ 오디오 디코딩 실패, 원본 사용`, 'err');
-    return blob;
+    return blob; // 실패 시 원본 반환
   }
-
-  const sampleRate = decodedBuffer.sampleRate;
-  const startSample = Math.floor((peakMs / 1000) * sampleRate);
-  const clipSamples = Math.floor(0.5 * sampleRate);
-  const endSample = Math.min(startSample + clipSamples, decodedBuffer.length);
-  const actualSamples = endSample - startSample;
-
-  if (actualSamples <= 0) return blob;
-
-  const offCtx = new OfflineAudioContext(decodedBuffer.numberOfChannels, actualSamples, sampleRate);
-  const buf = offCtx.createBuffer(decodedBuffer.numberOfChannels, actualSamples, sampleRate);
-  for (let ch = 0; ch < decodedBuffer.numberOfChannels; ch++) {
-    buf.copyToChannel(decodedBuffer.getChannelData(ch).slice(startSample, endSample), ch);
-  }
-  const src = offCtx.createBufferSource();
-  src.buffer = buf;
-  src.connect(offCtx.destination);
-  src.start();
-  const rendered = await offCtx.startRendering();
-  return audioBufferToWavBlob(rendered);
-}
-
-function audioBufferToWavBlob(buffer) {
-  const numChannels = buffer.numberOfChannels;
-  const sampleRate  = buffer.sampleRate;
-  const length      = buffer.length;
-  const pcmData     = new Float32Array(length * numChannels);
-
-  for (let ch = 0; ch < numChannels; ch++) {
-    const channelData = buffer.getChannelData(ch);
-    for (let i = 0; i < length; i++) pcmData[i * numChannels + ch] = channelData[i];
-  }
-
-  const dataLen = length * numChannels * 2;
-  const ab = new ArrayBuffer(44 + dataLen);
-  const view = new DataView(ab);
-  const writeStr = (offset, str) => { for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i)); };
-
-  writeStr(0, 'RIFF');
-  view.setUint32(4, 36 + dataLen, true);
-  writeStr(8, 'WAVE');
-  writeStr(12, 'fmt ');
-  view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true);
-  view.setUint16(22, numChannels, true);
-  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, sampleRate * numChannels * 2, true);
-  view.setUint16(32, numChannels * 2, true);
-  view.setUint16(34, 16, true);
-  writeStr(36, 'data');
-  view.setUint32(40, dataLen, true);
-
-  let offset = 44;
-  for (let i = 0; i < pcmData.length; i++) {
-    const s = Math.max(-1, Math.min(1, pcmData[i]));
-    view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-    offset += 2;
-  }
-  return new Blob([ab], { type: 'audio/wav' });
 }
 
 // ── MAIN GENERATE ──
 async function generateBeat() {
   const apiKey = document.getElementById('apiKey').value.trim();
   if (!apiKey) { log('❌ Gemini API 키를 입력해줘!', 'err'); return; }
-
   const recorded = audioRecordings.filter(Boolean).length;
   if (recorded === 0) { log('❌ 소리를 최소 1개 이상 녹음해야 해!', 'err'); return; }
 
-  const btn = document.getElementById('generateBtn');
+  const btn   = document.getElementById('generateBtn');
   const label = document.getElementById('generateLabel');
   btn.disabled = true;
   label.textContent = '🔍 AI 분석 중...';
   setProgress(5);
 
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 128;
-    analyser.connect(audioCtx.destination);
-  }
-  if (audioCtx.state === 'suspended') await audioCtx.resume();
+  // ★ 유저 버튼 클릭 안에서 AudioContext 확보
+  await ensureAudioCtx();
 
   document.getElementById('logBox').innerHTML = '';
-
   log('🚀 비트 생성 시작!', 'info');
-  log(`📡 사용 모델: ${getModel()}`, 'info');
+  log(`📡 모델: ${getModel()} | 환경: ${needsPCMRecord ? 'iOS/Safari' : 'Standard'}`, 'info');
 
   const validIndices = [];
   for (let i = 0; i < NUM; i++) {
     if (!audioRecordings[i]) { analysisResults[i] = null; continue; }
-    log(`🎤 소리 ${i+1} Gemini 분석 중...`, 'info');
+    log(`🎤 소리 ${i+1} 분석 중...`, 'info');
     label.textContent = `🎤 소리 ${i+1}/${recorded} 분석 중...`;
-
     try {
       const result = await analyzeAudioWithGemini(audioRecordings[i], i, apiKey);
       analysisResults[i] = result;
       validIndices.push(i);
-
-      document.getElementById(`ss-badge-${i}`).textContent = result.instrument;
+      document.getElementById(`ss-badge-${i}`).textContent   = result.instrument;
       document.getElementById(`ss-badge-${i}`).style.display = 'block';
-      document.getElementById(`ss-status-${i}`).textContent = `${result.instrument} · 피크 ${result.peak_ms}ms`;
-      document.getElementById(`ss-status-${i}`).className = 'slot-status ok';
-
-      log(`✅ 소리 ${i+1}: ${result.instrument} (${result.description})`, 'ok');
+      document.getElementById(`ss-status-${i}`).textContent  = `${result.instrument} · 피크 ${result.peak_ms}ms`;
+      document.getElementById(`ss-status-${i}`).className    = 'slot-status ok';
+      log(`✅ 소리 ${i+1}: ${result.instrument}`, 'ok');
       setProgress(5 + (validIndices.length / recorded) * 50);
     } catch(e) {
       log(`⚠ 소리 ${i+1} 분석 실패: ${e.message}`, 'err');
@@ -1189,25 +1235,24 @@ async function generateBeat() {
   for (const i of validIndices) {
     try {
       peakClips[i] = await extractPeakClip(audioRecordings[i], analysisResults[i].peak_ms);
-      log(`✅ 소리 ${i+1} 피크 클립 추출 완료`, 'ok');
+      log(`✅ 소리 ${i+1} 클립 추출 완료`, 'ok');
     } catch(e) {
       peakClips[i] = audioRecordings[i];
-      log(`⚠ 소리 ${i+1} 피크 추출 오류 (원본 사용): ${e.message}`, 'err');
+      log(`⚠ 소리 ${i+1} 원본 사용: ${e.message}`, 'err');
     }
   }
 
   setProgress(72);
   label.textContent = '🧠 비트 패턴 설계 중...';
-  log('🧠 Gemini로 비트 패턴 설계 중...', 'info');
+  log('🧠 비트 패턴 설계 중...', 'info');
   const validAnalyses = validIndices.map(i => ({ ...analysisResults[i], index: i }));
   try {
     beatPattern = await designBeatWithGemini(validAnalyses, apiKey);
-    log(`🎵 비트 완성! BPM: ${beatPattern.bpm} — ${beatPattern.description}`, 'ok');
+    log(`🎵 BPM: ${beatPattern.bpm} — ${beatPattern.description}`, 'ok');
   } catch(e) {
     log(`⚠ 비트 설계 실패, 기본 패턴 사용: ${e.message}`, 'err');
     beatPattern = {
-      bpm: 100,
-      description: '기본 4비트 패턴',
+      bpm: 100, description: '기본 4비트 패턴',
       sequence: validIndices.flatMap((idx, pos) =>
         [0, 4, 8, 12].filter(s => s % 4 === pos % 4).map(step => ({
           step, sound_index: idx, beat_type: 'perc', velocity: 0.8
@@ -1223,10 +1268,7 @@ async function generateBeat() {
 
   setProgress(100);
   btn.disabled = false;
-  setTimeout(() => {
-    setProgress(0);
-    label.textContent = '';
-  }, 1000);
+  setTimeout(() => { setProgress(0); label.textContent = ''; }, 1000);
 }
 
 // ── PLAYBACK ──
@@ -1246,17 +1288,14 @@ async function startPlayback(peakClips, pattern) {
     if (videoRecordings[i]) {
       const v = document.createElement('video');
       v.src = URL.createObjectURL(videoRecordings[i]);
-      v.muted = false;
-      v.loop = true;
-      v.playsInline = true;
+      v.muted = true; v.loop = true; v.playsInline = true;
       cell.appendChild(v);
     } else {
-      const placeholder = document.createElement('div');
-      placeholder.style.cssText = 'aspect-ratio:9/16;background:linear-gradient(135deg,#00c880,#00b8d0);display:flex;align-items:center;justify-content:center;font-size:24px;';
-      placeholder.textContent = ['🥁','🎵','🎶','🎤','🎸'][i];
-      cell.appendChild(placeholder);
+      const ph = document.createElement('div');
+      ph.style.cssText = 'aspect-ratio:9/16;background:linear-gradient(135deg,#00c880,#00b8d0);display:flex;align-items:center;justify-content:center;font-size:28px;';
+      ph.textContent = ['🥁','🎵','🎶','🎤','🎸'][i];
+      cell.appendChild(ph);
     }
-
     const lbl = document.createElement('div');
     lbl.className = 'beat-label';
     lbl.textContent = analysisResults[i]?.instrument || `#${i+1}`;
@@ -1266,47 +1305,45 @@ async function startPlayback(peakClips, pattern) {
 
   document.getElementById('playOverlay').classList.add('active');
 
-  if (!audioCtx || audioCtx.state === 'closed') {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    analyser = audioCtx.createAnalyser();
-    analyser.connect(audioCtx.destination);
-    analyser.fftSize = 128;
-    analyser.connect(audioCtx.destination);
-  }
-  if (audioCtx.state === 'suspended') await audioCtx.resume();
+  // AudioContext 재확인 (유저 액션 → STOP → 재시작 경우 대비)
+  await ensureAudioCtx();
+  initVisualizer();
 
+  // ── 디코딩: 반드시 WAV blob을 decodeAudio로 ──
   const decodedBuffers = {};
   for (let i = 0; i < NUM; i++) {
     if (!peakClips[i]) continue;
     try {
       const ab = await peakClips[i].arrayBuffer();
-      decodedBuffers[i] = await audioCtx.decodeAudioData(ab);
+      decodedBuffers[i] = await decodeAudio(ab);
+      log(`🔊 소리 ${i+1} 디코딩 완료 (${decodedBuffers[i].duration.toFixed(2)}s)`, 'ok');
     } catch(e) {
-      log(`⚠ 소리 ${i+1} 버퍼 디코딩 실패: ${e.message}`, 'err');
+      log(`⚠ 소리 ${i+1} 디코딩 실패: ${e.message}`, 'err');
     }
   }
 
-  const bpm = pattern.bpm || 100;
-  const stepMs = (60000 / bpm) / 4;
+  const bpm    = pattern.bpm || 100;
+  const stepMs = (60000 / bpm) / 4;   // 1/16 note in ms
   const loopMs = stepMs * 16;
 
-  function playLoop(startTime) {
+  function playLoop(loopStart) {
+    if (!audioCtx) return;
     pattern.sequence.forEach(step => {
-      const si = step.sound_index;
-      const when = startTime + (step.step * stepMs) / 1000;
+      const si       = step.sound_index;
+      const when     = loopStart + (step.step * stepMs) / 1000;
       const velocity = step.velocity || 0.8;
 
-      const gain = audioCtx.createGain();
-      gain.connect(analyser);
-      analyser.connect(audioCtx.destination);
-        
-      if (decodedBuffers[si]) {
-        const src = audioCtx.createBufferSource();
+      if (decodedBuffers[si] && when >= audioCtx.currentTime) {
+        const src  = audioCtx.createBufferSource();
         src.buffer = decodedBuffers[si];
+
         const gain = audioCtx.createGain();
         gain.gain.value = velocity;
+
+        // ★ 핵심: src → gain → analyser → destination (iOS 포함 전부 소리 남)
         src.connect(gain);
-        gain.connect(analyser);
+        gain.connect(analyserNode);
+        // analyserNode는 이미 destination에 연결돼 있음 (ensureAudioCtx에서)
         src.start(when);
       }
 
@@ -1319,12 +1356,14 @@ async function startPlayback(peakClips, pattern) {
       playTimers.push(t);
     });
 
-    const nextDelay = (startTime + loopMs / 1000 - audioCtx.currentTime) * 1000 - 50;
-    const t = setTimeout(() => playLoop(audioCtx.currentTime + 0.05), Math.max(0, nextDelay));
+    const nextDelay = (loopStart + loopMs / 1000 - audioCtx.currentTime) * 1000 - 80;
+    const t = setTimeout(() => {
+      if (audioCtx) playLoop(audioCtx.currentTime + 0.05);
+    }, Math.max(0, nextDelay));
     playTimers.push(t);
   }
 
-  playLoop(audioCtx.currentTime + 0.1);
+  playLoop(audioCtx.currentTime + 0.15);
 }
 
 function highlightCell(i) {
