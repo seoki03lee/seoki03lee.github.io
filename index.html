@@ -1128,17 +1128,29 @@ Analyze this audio clip and return ONLY valid JSON (no markdown, no explanation)
 
 // ── Gemini: 비트 설계 ──
 async function designBeatWithGemini(analyses, apiKey) {
-  const prompt = `You are a music producer AI. Design a beat pattern.
-Sounds: ${JSON.stringify(analyses)}
+    // 입력된 소리들의 모든 인덱스(sound_index) 목록을 추출합니다. (예: [0, 1, 2, 3, 4])
+  const allSoundIndices = analyses.map(a => a.index);
+
+  const prompt = `You are a professional music producer AI. Design a rich, multi-layered 16-step beat pattern.
+Available Sounds: ${JSON.stringify(analyses)}
+
+[CRITICAL MANDATORY RULE]
+You MUST include EVERY SINGLE sound_index from the available sounds (${JSON.stringify(allSoundIndices)}) at least ONCE (ideally multiple times) in the "sequence" array. DO NOT drop or ignore any sound_index. Every recorded sound must participate in the music!
+
+Assign roles appropriately based on their instrument characteristics:
+- Sounds like kick/bass: place on steps 0, 4, 8, 12 (Downbeats)
+- Sounds like snare/clap: place on steps 4, 12 (Backbeats)
+- Sounds like hihat/crisp sounds: place on steps 2, 6, 10, 14 or off-beats
+- Other percussions/FX: distribute creatively across empty steps (0-15) so that every single sound is used.
+
 Return ONLY valid JSON:
 {
-  "bpm": <80-140>,
-  "description": "<Korean 2 sentences>",
+  "bpm": <integer 80-140>,
+  "description": "<Korean 2 sentences explaining how you blended ALL elements together>",
   "sequence": [
     {"step":<0-15>,"sound_index":<0-4>,"beat_type":"<kick|snare|hihat|perc>","velocity":<0.5-1.0>}
   ]
-}
-Rules: 8-16 steps total. Bass/kick on 0,4,8,12. Snare on 4,12. Hihat on 2,6,10,14.`;
+}`;
 
   const url  = `${GEMINI_API_BASE}/${getModel()}:generateContent?key=${apiKey}`;
   const resp = await fetch(url, {
