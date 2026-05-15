@@ -1268,15 +1268,35 @@ async function generateBeat() {
   try {
     beatPattern = await designBeatWithGemini(validAnalyses, apiKey);
     log(`🎵 BPM: ${beatPattern.bpm} — ${beatPattern.description}`, 'ok');
-  } catch(e) {
-    log(`⚠ 비트 설계 실패, 기본 패턴 사용: ${e.message}`, 'err');
+  }  catch(e) {
+    log(`⚠ 비트 설계 실패, 모든 악기를 포함한 기본 패턴 사용: ${e.message}`, 'err');
+    
+    // ★ 예외 상황에서도 모든 악기(validIndices)가 16비트 안에 무조건 배치되도록 보장
+    const fallbackSequence = [];
+    validIndices.forEach((idx, pos) => {
+      // 악기 순서(pos)에 따라 서로 다른 박자에 배치하여 겹치지 않고 모두 소리 나게 함
+      const steps = [
+        [0, 8],      // 1번째 악기: 쿵, 쿵
+        [4, 12],     // 2번째 악기: 짝, 짝
+        [2, 6, 10, 14], // 3번째 악기: 쪼개는 하이햇 역할
+        [1, 9],      // 4번째 악기: 싱코페이션 엇박
+        [5, 13]      // 5번째 악기: 뒷박 포인트
+      ][pos % 5];
+      
+      steps.forEach(step => {
+        fallbackSequence.push({
+          step, 
+          sound_index: idx, 
+          beat_type: 'perc', 
+          velocity: 0.8
+        });
+      });
+    });
+
     beatPattern = {
-      bpm: 100, description: '기본 4비트 패턴',
-      sequence: validIndices.flatMap((idx, pos) =>
-        [0, 4, 8, 12].filter(s => s % 4 === pos % 4).map(step => ({
-          step, sound_index: idx, beat_type: 'perc', velocity: 0.8
-        }))
-      )
+      bpm: 110, 
+      description: 'AI 연결 실패로 녹음된 모든 소리를 조합한 기본 테크노 비트를 구성했습니다.',
+      sequence: fallbackSequence
     };
   }
 
