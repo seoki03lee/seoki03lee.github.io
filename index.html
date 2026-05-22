@@ -548,7 +548,7 @@ body::before {
         <div class="purpose-card"><span class="pc-icon">🌍</span><h4>일상 속 소리의 재발견</h4><p>책상 두드리는 소리, 발걸음, 빗소리... 평범한 소리들이 훌륭한 악기가 될 수 있다는 것을 체험하게 해줍니다.</p></div>
         <div class="purpose-card"><span class="pc-icon">🤖</span><h4>AI 작곡 × 피치 변조 연주</h4><p>Gemini AI가 8채널 화음 ABC 악보를 생성하고, 각 샘플의 playbackRate를 음정에 맞게 실시간 조절합니다.</p></div>
         <div class="purpose-card"><span class="pc-icon">🎮</span><h4>과거 음악 제작 방식의 오마주</h4><p>1990년대 사용되던 8채널 샘플 기반 연주 방식을 웹 브라우저에서 재현합니다.</p></div>
-        <div class="purpose-card"><span class="pc-icon">✨</span><h4>창의적 표현의 문턱 낮추기</h4><p>악기를 몰라도, 음악 이론을 몰라도 괜찮습니다. 스마트폰 하나와 주변 소리만으로 Chiptune 음악을 만들 수 있어요.</p></div>
+        <div class="purpose-card"><span class="pc-icon">✨</span><h4>창의적 표현의 문턱 낮추기</h4><p>악기를 몰라도, 음악 이론을 몰라도 괜찮습니다. 스마트폰 하나와 주변 소리만으로 음악을 만들 수 있어요.</p></div>
       </div>
     </div>
 
@@ -1279,8 +1279,8 @@ async function callGemini8Track(names, apiKey) {
     inactiveNote.push(`"ch${i}": "X:1\\nT:CH${i}\\nM:4/4\\nL:1/8\\nK:C\\n|z8|z8|z8|z8|z8|z8|z8|z8|"`);
   }
 
-  const prompt = `너는 슈퍼패미컴 SPC700 칩셋 전용 천재 작곡가 AI야.
-아래 악기 구성으로 "${mood}" 분위기의 8마디짜리 Chiptune 음악을 작곡해줘.
+  const prompt = `너는 천재 작곡가 AI야.
+아래 악기 구성으로 "${mood}" 분위기의 8마디짜리 음악을 작곡해줘.
 서로 완벽한 화음과 리듬을 이루도록 해.
 
 [악기 구성]
@@ -1334,7 +1334,7 @@ async function generateMusic() {
   const btn=document.getElementById('generateBtn');
   btn.disabled=true;
   document.getElementById('logBox').innerHTML='';
-  log(`🚀 SPC700 음악 생성 시작 — ${filled}/${activeChannels}채널 활성`,'info');
+  log(`🚀 음악 생성 시작 — ${filled}/${activeChannels}채널 활성`,'info');
   log(`📡 모델: ${getModel()}`,'info');
   log(`🎭 분위기: ${getMoodText()}`,'info');
   setProgress(5); setLabel('🎙 AudioContext 초기화...');
@@ -1379,7 +1379,7 @@ async function generateMusic() {
   } catch(e) {
     log(`⚠ AI 작곡 실패: ${e.message}`,'err');
     generatedTracks = {
-      bpm:120, title:'SPC700 Default',
+      bpm:120, title:'Music Default',
       tracks:{
         ch0:'X:1\nK:C\n|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|',
         ch1:'X:1\nK:C\n|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|',
