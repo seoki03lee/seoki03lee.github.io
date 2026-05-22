@@ -3,570 +3,489 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>일상속의 비트</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+<title>일상속의 노래 v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg-main: #f0faf5;
-    --bg-sub: rgba(0, 180, 120, 0.08);
-    --black: #050705;
-    --text-main: #0d2b1e;
-    --text-muted: #2a7a5a;
-    --green-grad: linear-gradient(135deg, #00c880 0%, #00b8c8 100%);
-    --green-solid: #00a87a;
-    --green-dark: #005f48;
-    --border: rgba(0, 160, 110, 0.22);
-    --red: #ff5252;
-    --radius: 28px;
-    --shadow: 0 18px 45px rgba(0, 140, 77, 0.13);
+  --bg:        #0a0e14;
+  --bg2:       #111820;
+  --bg3:       #18222e;
+  --panel:     #0d1420;
+  --border:    rgba(0,220,180,0.15);
+  --border2:   rgba(0,220,180,0.30);
+  --teal:      #00dca0;
+  --teal2:     #00b8c8;
+  --teal-dark: #007a60;
+  --purple:    #8060ff;
+  --red:       #ff4466;
+  --orange:    #ff8844;
+  --yellow:    #ffd060;
+  --text:      #c8ffe8;
+  --text2:     #6aaa88;
+  --text3:     #3a6650;
+  --radius:    16px;
+  --glow:      0 0 20px rgba(0,220,160,0.25);
+  --glow-sm:   0 0 10px rgba(0,220,160,0.18);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-* { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-}
-
-body { 
-    font-family: 'Noto Sans KR', sans-serif; 
-    background: radial-gradient(circle at top, rgba(0,200,130,0.10), transparent 35%),
-                linear-gradient(180deg, #e8f8f0 0%, #f0faf5 100%);
-    color: var(--text-main); 
-    min-height: 100vh; 
-    overflow-x: hidden;
-}
-
-/* 배경 타일 - 밝은 배경에 어울리는 어두운 격자 */
 body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image:
-        linear-gradient(rgba(0,140,90,0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,140,90,0.07) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px),
+    linear-gradient(rgba(0,220,160,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,220,160,0.03) 1px, transparent 1px);
+  background-size: auto, 40px 40px, 40px 40px;
 }
 
-.app { 
-    position: relative; 
-    max-width: 820px; 
-    margin: 0 auto; 
-    padding: 32px 20px 40px; 
+.app {
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  z-index: 1;
 }
 
 /* ── HEADER ── */
-.header { 
-    display: flex; 
-    flex-direction: column;
-    gap: 8px;
-    padding: 24px 24px 28px;
-    margin-bottom: 0;
-    background: rgba(0,200,140,0.10);
-    border: 1px solid rgba(0,180,120,0.20);
-    border-bottom: none;
-    border-radius: var(--radius) var(--radius) 0 0;
-    box-shadow: var(--shadow);
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--panel);
+  border: 1px solid var(--border2);
+  border-bottom: none;
+  border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: var(--glow);
 }
-.logo { 
-    font-size: 28px; 
-    font-weight: 900;
-    color: var(--text-main);
-    letter-spacing: -1px;
-    background: linear-gradient(135deg, #007a50, #009db0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+.logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 22px; font-weight: 700; letter-spacing: 2px;
+  background: linear-gradient(135deg, #00dca0, #00b8c8, #8060ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.logo span {
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--text-muted);
-    -webkit-text-fill-color: var(--text-muted);
-    display: block;
-    margin-top: 3px;
-    font-family: 'Space Mono', monospace;
+.logo sub {
+  font-size: 10px; font-weight: 400; letter-spacing: 3px;
+  display: block; color: var(--text2); -webkit-text-fill-color: var(--text2);
+  margin-top: 3px; text-transform: uppercase;
 }
+.header-status { display:flex; gap:8px; align-items:center; }
+.status-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:var(--teal); box-shadow:0 0 8px var(--teal);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.status-txt { font-family:'Space Mono',monospace; font-size:10px; color:var(--text2); letter-spacing:1px; }
 
-/* ── TABS ── */
+/* ── TAB BAR ── */
 .tab-bar {
-    display: flex;
-    background: rgba(0,160,100,0.10);
-    border: 1px solid rgba(0,180,120,0.20);
-    border-top: none;
-    border-bottom: none;
-    overflow: hidden;
-    position: relative;
-    z-index: 1;
+  display:flex; background:rgba(0,20,14,0.8);
+  border:1px solid var(--border); border-top:none; border-bottom:none;
 }
 .tab-btn {
-    flex: 1;
-    padding: 14px 10px;
-    border: none;
-    background: transparent;
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.22s;
-    border-bottom: 3px solid transparent;
-    letter-spacing: 0.5px;
+  flex:1; padding:13px 10px; border:none; background:transparent;
+  font-family:'Space Mono',monospace; font-size:11px; font-weight:700; letter-spacing:0.5px;
+  color:var(--text3); cursor:pointer; transition:all 0.2s;
+  border-bottom:2px solid transparent;
 }
-.tab-btn:hover {
-    background: rgba(0,180,120,0.08);
-    color: var(--green-dark);
-}
-.tab-btn.active {
-    color: var(--green-dark);
-    background: rgba(0,200,140,0.13);
-    border-bottom: 3px solid var(--green-solid);
-}
+.tab-btn:hover { color:var(--teal); background:rgba(0,220,160,0.04); }
+.tab-btn.active { color:var(--teal); border-bottom:2px solid var(--teal); background:rgba(0,220,160,0.07); }
 
 /* ── TAB CONTENT ── */
 .tab-content {
-    background: rgba(255,255,255,0.75);
-    border: 1px solid rgba(0,180,120,0.20);
-    border-top: none;
-    border-radius: 0 0 var(--radius) var(--radius);
-    padding: 28px 24px 32px;
-    box-shadow: var(--shadow);
-    margin-bottom: 0;
+  background:var(--bg2); border:1px solid var(--border); border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);
+  padding:24px 20px 28px; box-shadow:0 20px 60px rgba(0,0,0,0.5);
 }
+.section-panel { display:none; }
+.section-panel.active { display:block; }
 
-.section-panel { display: none; }
-.section-panel.active { display: block; }
-
-/* ── GUIDE PAGE ── */
-.guide-hero {
-    text-align: center;
-    padding: 20px 0 28px;
-}
-.guide-hero .hero-icon {
-    font-size: 52px;
-    margin-bottom: 14px;
-    display: block;
-}
-.guide-hero h2 {
-    font-size: 22px;
-    font-weight: 900;
-    color: var(--text-main);
-    margin-bottom: 8px;
-}
-.guide-hero p {
-    font-size: 14px;
-    color: var(--text-muted);
-    line-height: 1.7;
-}
-
-.guide-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin: 24px 0;
-}
+/* ── GUIDE ── */
+.guide-hero { text-align:center; padding:16px 0 24px; }
+.guide-hero .hero-icon { font-size:48px; margin-bottom:12px; display:block; }
+.guide-hero h2 { font-size:20px; font-weight:900; color:var(--text); margin-bottom:8px; }
+.guide-hero p { font-size:13px; color:var(--text2); line-height:1.8; }
+.guide-steps { display:flex; flex-direction:column; gap:12px; margin:20px 0; }
 .guide-step {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    background: linear-gradient(135deg, rgba(0,200,140,0.13), rgba(0,180,220,0.09));
-    border: 1px solid rgba(0,180,120,0.20);
-    border-radius: 18px;
-    padding: 18px 20px;
+  display:flex; align-items:flex-start; gap:16px;
+  background:var(--bg3); border:1px solid var(--border); border-radius:12px; padding:16px 18px;
 }
-.step-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--green-solid);
-    min-width: 32px;
-    line-height: 1.3;
-}
-.step-body {}
-.step-body strong {
-    display: block;
-    font-size: 15px;
-    font-weight: 800;
-    color: var(--text-main);
-    margin-bottom: 5px;
-}
-.step-body p {
-    font-size: 13px;
-    color: #3a6a50;
-    line-height: 1.7;
-}
-
+.step-num { font-family:'Space Mono',monospace; font-size:18px; font-weight:700; color:var(--teal); min-width:28px; }
+.step-body strong { display:block; font-size:14px; font-weight:800; color:var(--text); margin-bottom:4px; }
+.step-body p { font-size:13px; color:var(--text2); line-height:1.7; }
 .guide-note {
-    background: rgba(0,180,120,0.08);
-    border: 1px solid rgba(0,180,120,0.18);
-    border-radius: 14px;
-    padding: 16px 18px;
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    margin-top: 8px;
+  background:rgba(0,220,160,0.06); border:1px solid var(--border);
+  border-radius:12px; padding:14px 16px; font-size:13px; color:var(--text2); line-height:1.7;
 }
-.guide-note strong {
-    color: var(--green-dark);
-}
+.guide-note strong { color:var(--teal); }
 
-/* ── PURPOSE PAGE ── */
-.purpose-section {
-    padding: 8px 0;
-}
+/* ── PURPOSE ── */
+.purpose-section { padding:4px 0; }
 .purpose-section h3 {
-    font-size: 18px;
-    font-weight: 900;
-    color: var(--text-main);
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid rgba(0,180,120,0.18);
+  font-size:16px; font-weight:900; color:var(--text);
+  margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border);
 }
 .purpose-card {
-    background: linear-gradient(135deg, rgba(0,200,140,0.12), rgba(0,180,220,0.08));
-    border: 1px solid rgba(0,180,120,0.20);
-    border-radius: 18px;
-    padding: 20px;
-    margin-bottom: 14px;
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:12px; padding:18px; margin-bottom:12px;
 }
-.purpose-card .pc-icon {
-    font-size: 28px;
-    margin-bottom: 10px;
-    display: block;
-}
-.purpose-card h4 {
-    font-size: 15px;
-    font-weight: 800;
-    color: var(--text-main);
-    margin-bottom: 8px;
-}
-.purpose-card p {
-    font-size: 13px;
-    color: #3a6a50;
-    line-height: 1.75;
-}
+.purpose-card .pc-icon { font-size:26px; margin-bottom:8px; display:block; }
+.purpose-card h4 { font-size:14px; font-weight:800; color:var(--text); margin-bottom:6px; }
+.purpose-card p { font-size:13px; color:var(--text2); line-height:1.75; }
 
-/* ── MAIN APP (탭 3) ── */
-.info-grid { 
-    display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-    gap: 16px; 
-    margin-bottom: 24px; 
-}
-.info-card { 
-    background: linear-gradient(135deg, rgba(0,200,140,0.18), rgba(0,180,220,0.12)); 
-    border: 1px solid rgba(0,180,120,0.22); 
-    border-radius: calc(var(--radius) - 4px); 
-    padding: 20px; 
-    box-shadow: var(--shadow); 
-    color: var(--text-main);
-}
-.info-card .ic-title {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--green-dark);
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-.info-card p { font-size: 13px; line-height: 1.7; color: #2a5040; }
+/* ══════════════════════
+   SPC700 MAIN APP
+══════════════════════ */
 
+/* Visualizer */
 .viz-wrap {
-    background: #e0f5eb;
-    border: 1px solid rgba(0,180,120,0.22);
-    border-radius: calc(var(--radius) - 2px);
-    padding: 16px;
-    margin-bottom: 24px;
-    box-shadow: 0 8px 25px rgba(0,150,90,0.10);
+  background:#050c10; border:1px solid var(--border); border-radius:12px;
+  padding:10px; margin-bottom:20px; position:relative; overflow:hidden;
 }
-#canvas { width: 100%; height: 80px; display: block; border-radius: 14px; }
+.viz-label {
+  font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px;
+  color:var(--text3); position:absolute; top:8px; left:12px;
+}
+#canvas { width:100%; height:64px; display:block; border-radius:8px; }
 
-/* ── SOUND SLOTS ── */
-.sound-slot {
-    background: linear-gradient(135deg, rgba(0,200,140,0.14), rgba(0,180,220,0.10));
-    border: 1px solid rgba(0,180,120,0.20);
-    border-radius: calc(var(--radius) - 4px);
-    padding: 20px;
-    margin-bottom: 14px;
-    display: flex; align-items: center; gap: 16px;
-    box-shadow: 0 8px 25px rgba(0,140,90,0.08);
-    transition: transform 0.25s, box-shadow 0.25s;
-}
-.sound-slot:hover { transform: translateY(-1px); }
-.sound-slot.recording {
-    border-color: rgba(255,82,82,0.40);
-    box-shadow: 0 0 0 3px rgba(255,82,82,0.10);
-}
-.sound-slot.done {
-    border-color: rgba(0,180,130,0.50);
-    box-shadow: 0 0 0 3px rgba(0,180,130,0.10);
-}
-.slot-num { font-family: 'Space Mono', monospace; font-size: 22px; color: var(--green-solid); font-weight: 800; min-width: 28px; }
-.slot-info { flex: 1; }
-.slot-name { font-weight: 900; font-size: 15px; color: var(--text-main); }
-.slot-status { font-size: 12px; color: #5a8a70; margin-top: 5px; }
-.slot-status.ok { color: var(--green-solid); }
-.slot-status.err { color: var(--red); }
+/* Progress */
+.progress-wrap { width:100%; height:4px; background:rgba(0,180,120,0.10); border-radius:2px; margin-bottom:8px; overflow:hidden; }
+#btnProgress { height:100%; background:linear-gradient(90deg,var(--teal),var(--teal2)); transition:width 0.3s; border-radius:2px; }
+#generateLabel { text-align:center; font-weight:700; min-height:20px; font-size:13px; color:var(--teal); margin-bottom:14px; font-family:'Space Mono',monospace; }
 
-.instrument-badge {
-    background: linear-gradient(135deg, #00c880, #00a8c8);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 800;
-    padding: 6px 12px;
-    border-radius: 999px;
-    white-space: nowrap;
+/* Master Info */
+.master-info { display:flex; gap:12px; align-items:center; margin-bottom:18px; flex-wrap:wrap; }
+.bpm-block { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.bpm-display {
+  font-family:'Space Mono',monospace; font-size:28px; font-weight:700; color:var(--teal);
+  text-shadow:0 0 15px rgba(0,220,160,0.5);
+  background:var(--panel); padding:6px 16px; border-radius:8px; border:1px solid var(--border);
+  min-width:90px; text-align:center;
+}
+.bpm-label { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:2px; }
+.bpm-slider-wrap { display:flex; align-items:center; gap:8px; }
+.bpm-slider {
+  -webkit-appearance:none; appearance:none;
+  width:120px; height:4px; border-radius:2px;
+  background:rgba(0,220,160,0.15); outline:none; cursor:pointer;
+}
+.bpm-slider::-webkit-slider-thumb {
+  -webkit-appearance:none; width:14px; height:14px; border-radius:50%;
+  background:var(--teal); box-shadow:0 0 6px var(--teal); cursor:pointer;
+}
+.bpm-slider-label { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:1px; }
+.track-title-display {
+  font-family:'Space Mono',monospace; font-size:14px; color:var(--text2); font-style:italic; flex:1;
 }
 
-.btn-rec {
-    background: linear-gradient(135deg, #00c880, #009e70);
-    border: none; color: #fff; padding: 11px 22px;
-    border-radius: 999px; font-weight: 800; cursor: pointer;
-    font-family: 'Space Mono', monospace;
-    transition: opacity 0.2s, transform 0.2s;
-    white-space: nowrap;
-    font-size: 13px;
+/* Loop Counter */
+.loop-counter {
+  font-family:'Space Mono',monospace; font-size:11px; color:var(--text3); letter-spacing:1px;
+  background:var(--panel); padding:4px 10px; border-radius:6px; border:1px solid var(--border);
 }
-.btn-rec:hover { opacity: 0.90; transform: translateY(-1px); }
-.btn-rec.recording {
-    background: #ff5252;
-    color: #fff;
-    animation: pulse 1s infinite;
+.loop-counter span { color:var(--teal); }
+
+/* ── CH STRIP ── */
+.ch-strips { display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+
+.ch-strip {
+  background:var(--bg3); border:1px solid var(--border); border-radius:12px;
+  padding:10px 14px; transition:border-color 0.3s, box-shadow 0.3s;
 }
-.btn-rec.done {
-    background: linear-gradient(135deg, #00a878, #007a58);
-}
+.ch-strip.has-sample { border-color:rgba(0,220,160,0.28); }
+.ch-strip.recording  { border-color:rgba(255,68,100,0.5); box-shadow:0 0 12px rgba(255,68,100,0.2); }
+.ch-strip.active-play{ border-color:var(--teal); box-shadow:0 0 14px rgba(0,220,160,0.35); }
+.ch-strip.muted { opacity:0.45; }
 
-@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-
-/* ── VIDEO GRID ── */
-.video-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-
-.video-cell {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+/* Row 1: main controls */
+.ch-row1 {
+  display:grid;
+  grid-template-columns: 36px 1fr auto auto auto auto auto;
+  align-items:center; gap:8px;
 }
 
-.video-box {
-    aspect-ratio: 9/16;
-    background: #d8f0e4;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 2px solid transparent;
-    position: relative;
-    transition: border-color 0.3s;
-}
-.video-box.recording { border-color: var(--red); }
-.video-box.done { border-color: var(--green-solid); }
-.video-box video { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-.rec-badge {
-    position: absolute;
-    top: 6px; left: 6px;
-    background: var(--red);
-    color: white;
-    font-size: 9px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: 'Space Mono', monospace;
-    display: none;
-}
-.video-box.recording .rec-badge { display: block; }
-
-.play-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    background: rgba(0,0,0,0.04);
-    pointer-events: none;
-}
-.video-box.done .play-overlay { display: none; }
-
-.slot-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-align: center;
-    font-family: 'Space Mono', monospace;
+/* Row 2: sliders (collapsible) */
+.ch-row2 {
+  display:grid;
+  grid-template-columns: 36px 1fr 1fr;
+  align-items:center; gap:8px;
+  margin-top:8px; padding-top:8px;
+  border-top:1px solid var(--border);
 }
 
-.btn-vid {
-    background: var(--green-grad);
-    border: none; color: white; padding: 8px 0;
-    border-radius: 10px; font-weight: 700; cursor: pointer;
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    width: 100%;
-    transition: opacity 0.2s;
+.ch-num {
+  font-family:'Space Mono',monospace; font-size:13px; font-weight:700;
+  color:var(--teal2); text-align:center; line-height:1;
 }
-.btn-vid.done {
-    background: linear-gradient(135deg, #00a878, #007a60);
+.ch-num small { display:block; font-size:9px; color:var(--text3); letter-spacing:1px; margin-top:2px; }
+
+.ch-center { display:flex; flex-direction:column; gap:5px; min-width:0; }
+.ch-name-input {
+  background:transparent; border:none; border-bottom:1px solid var(--border);
+  color:var(--text); font-family:'Space Mono',monospace; font-size:12px; font-weight:700;
+  width:100%; padding:2px 4px; outline:none; transition:border-color 0.2s;
+}
+.ch-name-input:focus { border-bottom-color:var(--teal); }
+.ch-meta { display:flex; gap:8px; align-items:center; }
+.ch-status { font-size:10px; color:var(--text3); font-family:'Space Mono',monospace; }
+.ch-status.ok  { color:var(--teal); }
+.ch-status.err { color:var(--red); }
+.ch-indicator {
+  width:8px; height:8px; border-radius:50%; background:var(--text3); flex-shrink:0;
+  transition:background 0.1s, box-shadow 0.1s;
+}
+.ch-indicator.lit { background:var(--teal); box-shadow:0 0 8px var(--teal); }
+
+/* Waveform mini canvas */
+.ch-wave { height:24px; width:80px; border-radius:4px; background:#050c10; }
+
+/* Slider group */
+.slider-group { display:flex; flex-direction:column; gap:3px; }
+.slider-group-label {
+  font-family:'Space Mono',monospace; font-size:8px; letter-spacing:1.5px; color:var(--text3);
+  display:flex; justify-content:space-between;
+}
+.slider-group-label span { color:var(--teal2); }
+.ch-slider {
+  -webkit-appearance:none; appearance:none;
+  width:100%; height:3px; border-radius:2px;
+  background:rgba(0,220,160,0.15); outline:none; cursor:pointer;
+}
+.ch-slider::-webkit-slider-thumb {
+  -webkit-appearance:none; width:12px; height:12px; border-radius:50%;
+  background:var(--teal); box-shadow:0 0 5px var(--teal); cursor:pointer;
+}
+.ch-slider.detune::-webkit-slider-thumb { background:var(--purple); box-shadow:0 0 5px var(--purple); }
+
+/* Buttons in strip */
+.btn-sm {
+  font-family:'Space Mono',monospace; font-size:10px; font-weight:700;
+  padding:6px 10px; border-radius:7px; border:none; cursor:pointer;
+  transition:all 0.18s; white-space:nowrap; letter-spacing:0.5px;
+}
+.btn-rec { background:rgba(255,68,100,0.15); border:1px solid rgba(255,68,100,0.4); color:#ff7799; }
+.btn-rec:hover { background:rgba(255,68,100,0.25); }
+.btn-rec.recording { background:#ff4466; color:#fff; border-color:#ff4466; animation:pulse 0.8s infinite; }
+.btn-rec.done { background:rgba(0,220,160,0.15); border-color:rgba(0,220,160,0.4); color:var(--teal); }
+
+.btn-file { display:none; }
+.btn-file-label {
+  background:rgba(0,184,200,0.12); border:1px solid rgba(0,184,200,0.35); color:var(--teal2);
+  font-family:'Space Mono',monospace; font-size:10px; font-weight:700;
+  padding:6px 10px; border-radius:7px; cursor:pointer; white-space:nowrap;
+  transition:all 0.18s; letter-spacing:0.5px; display:inline-block;
+}
+.btn-file-label:hover { background:rgba(0,184,200,0.22); }
+.btn-file-label.has-file { color:var(--teal); border-color:rgba(0,220,160,0.4); background:rgba(0,220,160,0.12); }
+
+.btn-preview {
+  background:rgba(255,136,68,0.12); border:1px solid rgba(255,136,68,0.35); color:var(--orange);
+  padding:6px 8px;
+}
+.btn-preview:hover { background:rgba(255,136,68,0.22); }
+
+.btn-mute { background:rgba(128,96,255,0.12); border:1px solid rgba(128,96,255,0.30); color:#a090ff; min-width:36px; }
+.btn-mute:hover { background:rgba(128,96,255,0.22); }
+.btn-mute.muted { background:rgba(128,96,255,0.40); color:#fff; }
+
+.btn-solo { background:rgba(255,216,96,0.10); border:1px solid rgba(255,216,96,0.28); color:#ffd060; min-width:36px; }
+.btn-solo:hover { background:rgba(255,216,96,0.20); }
+.btn-solo.soloing { background:#ffd060; color:#0a0e14; }
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.55} }
+
+/* Add Channel Button */
+.add-ch-btn {
+  width:100%; padding:12px; border-radius:12px;
+  border:1px dashed rgba(0,220,160,0.3);
+  background:rgba(0,220,160,0.04); color:var(--text3);
+  font-family:'Space Mono',monospace; font-size:12px; font-weight:700;
+  cursor:pointer; transition:all 0.2s; letter-spacing:1px; margin-bottom:20px;
+}
+.add-ch-btn:hover { color:var(--teal); border-color:rgba(0,220,160,0.5); background:rgba(0,220,160,0.08); }
+.add-ch-btn:disabled { opacity:0.3; cursor:not-allowed; }
+
+/* ── GENRE / MOOD ── */
+.genre-section {
+  background:var(--bg3); border:1px solid var(--border); border-radius:12px;
+  padding:16px; margin-bottom:16px;
+}
+.genre-title {
+  font-family:'Space Mono',monospace; font-size:9px; letter-spacing:2px;
+  color:var(--text3); margin-bottom:12px; display:block;
+}
+.genre-preset-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px; }
+.genre-preset-btn {
+  font-family:'Space Mono',monospace; font-size:10px; font-weight:700;
+  padding:5px 10px; border-radius:6px;
+  border:1px solid var(--border); background:transparent; color:var(--text2);
+  cursor:pointer; transition:all 0.18s; white-space:nowrap;
+}
+.genre-preset-btn:hover { color:var(--teal); border-color:rgba(0,220,160,0.4); background:rgba(0,220,160,0.06); }
+.genre-preset-btn.active { color:var(--teal); border-color:var(--teal); background:rgba(0,220,160,0.12); }
+.genre-input {
+  width:100%; padding:10px 14px; border-radius:10px;
+  border:1px solid var(--border); background:var(--panel);
+  font-family:'Noto Sans KR',sans-serif; font-size:13px; color:var(--text);
+  outline:none; transition:border-color 0.2s; resize:none; height:44px;
+}
+.genre-input:focus { border-color:var(--teal); }
+.genre-input::placeholder { color:var(--text3); }
+
+/* ── ABC SCORE AREA ── */
+.score-section {
+  background:#050c10; border:1px solid var(--border); border-radius:12px;
+  padding:16px; margin-bottom:18px; min-height:80px; position:relative;
+}
+.score-title { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:2px; margin-bottom:10px; }
+#abcScoreDisplay {
+  font-family:'Space Mono',monospace; font-size:10px; color:#4a9970; line-height:1.6;
+  overflow:auto; max-height:120px; white-space:pre;
 }
 
-/* ── LOG BOX ── */
-#logBox {
-    margin-top: 20px;
-    font-size: 11px;
-    color: var(--text-muted);
-    font-family: 'Space Mono', monospace;
-    max-height: 200px;
-    overflow-y: auto;
-    background: #e8f5ee;
-    border-radius: 12px;
-    padding: 0;
-    transition: padding 0.3s;
+/* ── HISTORY ── */
+.history-section { margin-bottom:18px; }
+.history-title { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:2px; margin-bottom:8px; display:block; }
+.history-list { display:flex; flex-direction:column; gap:6px; }
+.history-item {
+  display:flex; align-items:center; gap:10px;
+  background:var(--bg3); border:1px solid var(--border); border-radius:10px;
+  padding:10px 14px; cursor:pointer; transition:all 0.18s;
 }
-#logBox.visible { padding: 15px; border: 1px solid var(--border); }
+.history-item:hover { border-color:rgba(0,220,160,0.35); background:rgba(0,220,160,0.04); }
+.history-item.current { border-color:var(--teal); background:rgba(0,220,160,0.06); }
+.history-num { font-family:'Space Mono',monospace; font-size:10px; color:var(--text3); min-width:20px; }
+.history-info { flex:1; min-width:0; }
+.history-ttl { font-family:'Space Mono',monospace; font-size:11px; font-weight:700; color:var(--text); }
+.history-sub { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); margin-top:2px; }
+.history-bpm { font-family:'Space Mono',monospace; font-size:10px; color:var(--teal2); white-space:nowrap; }
+.history-empty { font-family:'Space Mono',monospace; font-size:11px; color:var(--text3); padding:8px 0; }
 
-.log-line { padding: 2px 0; line-height: 1.6; }
-.log-line.info { color: var(--text-main); }
-.log-line.ok { color: var(--green-solid); }
-.log-line.err { color: var(--red); }
+/* ── GENERATE BTN ── */
+.generate-btn {
+  width:100%; padding:20px; border-radius:var(--radius);
+  border:1px solid rgba(0,220,160,0.4);
+  background:linear-gradient(135deg, rgba(0,220,160,0.18), rgba(0,184,200,0.12));
+  color:var(--teal); font-size:16px; font-weight:900; cursor:pointer;
+  box-shadow:0 0 30px rgba(0,220,160,0.15);
+  font-family:'Space Mono',monospace; transition:all 0.22s; letter-spacing:1px; margin-bottom:16px;
+}
+.generate-btn:hover { background:linear-gradient(135deg,rgba(0,220,160,0.28),rgba(0,184,200,0.20)); box-shadow:0 0 40px rgba(0,220,160,0.28); transform:translateY(-1px); }
+.generate-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
 
-/* ── MODEL SELECTOR ── */
-.model-row { margin: 24px 0 10px; }
-.model-row label {
-    display: block;
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--green-dark);
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
+/* Download + Action row */
+.action-row { display:flex; gap:10px; margin-bottom:16px; }
+.download-btn {
+  flex:1; padding:13px; border-radius:12px;
+  border:1px solid rgba(0,184,200,0.35); background:rgba(0,184,200,0.10);
+  color:var(--teal2); font-family:'Space Mono',monospace; font-size:12px; font-weight:700;
+  cursor:pointer; transition:all 0.2s; letter-spacing:0.5px;
+}
+.download-btn:hover { background:rgba(0,184,200,0.20); }
+.download-btn:disabled { opacity:0.3; cursor:not-allowed; }
+
+/* ── MODEL / API ── */
+.model-row { margin:0 0 10px; }
+.field-label { font-family:'Space Mono',monospace; font-size:9px; font-weight:700; color:var(--text3); letter-spacing:2px; display:block; margin-bottom:6px; }
+.model-select, .api-input {
+  width:100%; padding:11px 14px; border-radius:10px;
+  border:1px solid var(--border); background:var(--panel);
+  font-family:'Space Mono',monospace; font-size:12px; color:var(--text); outline:none; transition:border-color 0.2s;
 }
 .model-select {
-    width: 100%;
-    padding: 13px 16px;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: rgba(0,180,120,0.06);
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    color: var(--text-main);
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23007a50' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 40px;
-    transition: border-color 0.2s, background-color 0.2s;
+  appearance:none; -webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300dca0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; cursor:pointer;
 }
-.model-select:focus {
-    border-color: var(--green-solid);
-    background-color: rgba(0,180,120,0.10);
-}
-.model-badge {
-    display: inline-block;
-    margin-top: 8px;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: linear-gradient(135deg, rgba(0,200,140,0.18), rgba(0,180,220,0.12));
-    border: 1px solid rgba(0,180,120,0.22);
-    color: var(--green-dark);
-}
+.model-select:focus, .api-input:focus { border-color:var(--teal); }
+.api-input::placeholder { color:var(--text3); }
+.api-row { margin-bottom:14px; }
 
-/* ── FOOTER ── */
-.page-footer {
-    text-align: right;
-    margin-top: 20px;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: #8abba0;
-    letter-spacing: 0.3px;
-    padding-right: 4px;
+/* ── LOG ── */
+#logBox {
+  font-size:10px; color:var(--text2); font-family:'Space Mono',monospace;
+  max-height:160px; overflow-y:auto; background:#050c10; border-radius:10px;
+  padding:0; transition:padding 0.3s; margin-top:14px;
 }
-
-/* ── API ROW ── */
-.api-row { margin: 10px 0 14px; }
-.api-row input {
-    width: 100%; padding: 14px 16px; border-radius: 14px;
-    border: 1px solid var(--border); 
-    background: rgba(0,180,120,0.06);
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    color: var(--text-main);
-    outline: none;
-    transition: border-color 0.2s;
-}
-.api-row input:focus {
-    border-color: var(--green-solid);
-    background: rgba(0,180,120,0.10);
-}
-.api-row input::placeholder { color: #7ab095; }
-
-.generate-btn {
-    width: 100%; padding: 22px; border-radius: var(--radius);
-    border: none; background: var(--green-grad); color: white;
-    font-size: 17px; font-weight: 900; cursor: pointer;
-    box-shadow: 0 12px 30px rgba(0,180,160,0.25);
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: opacity 0.2s, transform 0.2s;
-}
-.generate-btn:hover { opacity: 0.93; transform: translateY(-1px); }
-.generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+#logBox.visible { padding:12px; border:1px solid var(--border); }
+.log-line { padding:2px 0; line-height:1.6; }
+.log-line.info { color:var(--text2); }
+.log-line.ok   { color:var(--teal); }
+.log-line.err  { color:var(--red); }
 
 /* ── PLAYBACK OVERLAY ── */
 #playOverlay {
-    position: fixed; inset: 0; background: rgba(230,250,242,0.97);
-    z-index: 1000; display: none; flex-direction: column; align-items: center; justify-content: center;
+  position:fixed; inset:0; background:rgba(8,14,20,0.97);
+  z-index:1000; display:none; flex-direction:column; align-items:center; justify-content:center;
 }
-#playOverlay.active { display: flex; }
+#playOverlay.active { display:flex; }
+#playOverlay h2 {
+  font-family:'Space Mono',monospace; font-size:14px; letter-spacing:3px;
+  color:var(--teal); margin-bottom:4px; text-transform:uppercase;
+}
+#beatDesc { color:var(--text2); font-size:13px; margin-bottom:6px; font-style:italic; text-align:center; max-width:500px; }
+#loopCounterOverlay {
+  font-family:'Space Mono',monospace; font-size:11px; color:var(--text3);
+  margin-bottom:20px; letter-spacing:1px;
+}
+#loopCounterOverlay span { color:var(--teal); }
 
+.play-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  max-width:600px; width:100%; margin-bottom:28px;
+}
 .play-cell {
-    width: 110px;
-    border-radius: 15px;
-    overflow: hidden;
-    border: 3px solid #c0e8d4;
-    transition: all 0.2s;
-    text-align: center;
+  background:var(--bg3); border:2px solid var(--border); border-radius:12px;
+  padding:14px 10px 10px; text-align:center; transition:all 0.15s;
+  position:relative; overflow:hidden;
 }
-.play-cell.active {
-    border-color: var(--green-solid);
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(0,180,130,0.35);
-}
-.play-cell video {
-    width: 100%;
-    aspect-ratio: 9/16;
-    object-fit: cover;
-    display: block;
-}
-.beat-label {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 5px;
-    color: var(--text-muted);
-    font-family: 'Space Mono', monospace;
-    background: rgba(0,180,120,0.08);
-}
+.play-cell.active { border-color:var(--teal); box-shadow:0 0 20px rgba(0,220,160,0.4); background:rgba(0,220,160,0.08); }
+.play-cell.muted-cell { opacity:0.3; }
+.play-cell-ch { font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:1px; margin-bottom:4px; }
+.play-cell-name { font-family:'Space Mono',monospace; font-size:10px; color:var(--text); font-weight:700; margin-bottom:6px; }
+.play-cell-note { font-size:18px; color:var(--teal); font-family:'Space Mono',monospace; font-weight:700; text-shadow:0 0 10px rgba(0,220,160,0.6); min-height:24px; }
+.play-cell-viz { height:28px; display:flex; align-items:flex-end; justify-content:center; gap:2px; margin-top:6px; }
+.play-cell-viz span { display:inline-block; width:3px; background:var(--teal); border-radius:2px; transition:height 0.1s; }
 
-/* ── PROGRESS ── */
-.progress-wrap {
-    width: 100%; height: 7px; 
-    background: rgba(0,160,100,0.12); 
-    border-radius: 4px; 
-    margin-bottom: 10px; 
-    overflow: hidden;
+.stop-btn {
+  padding:12px 36px; border-radius:100px; border:1px solid var(--border2);
+  background:rgba(0,220,160,0.08); color:var(--text); cursor:pointer; font-weight:700; font-size:14px;
+  font-family:'Space Mono',monospace; transition:all 0.2s;
 }
+.stop-btn:hover { background:rgba(0,220,160,0.16); }
+
+.overlay-viz-wrap { width:100%; max-width:600px; height:48px; margin-bottom:20px; background:#050c10; border-radius:8px; overflow:hidden; }
+#overlayCanvas { width:100%; height:100%; display:block; }
+
+.page-footer { text-align:right; margin-top:18px; font-family:'Space Mono',monospace; font-size:9px; color:var(--text3); letter-spacing:0.5px; }
+
+/* Divider */
+.section-divider { height:1px; background:var(--border); margin:18px 0; }
 </style>
 </head>
 <body>
-
 <div class="app">
+
   <!-- HEADER -->
   <div class="header">
-    <div class="logo">
-      일상속에 비트로
-      <span>AI Music &amp; Visual Lab</span>
+    <div class="logo-block">
+      <div class="logo">일상속의 노래</div>
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-top:4px;">8-CHANNEL SAMPLER WORKSTATION v3</div>
+    </div>
+    <div class="header-status">
+      <div class="status-dot"></div>
+      <div class="status-txt" id="headerStatus">READY</div>
     </div>
   </div>
 
@@ -574,852 +493,1189 @@ body::before {
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('guide')">📖 사용방법</button>
     <button class="tab-btn" onclick="switchTab('purpose')">💡 만든 목적</button>
-    <button class="tab-btn" onclick="switchTab('app')">🎵 비트 메이커</button>
+    <button class="tab-btn" onclick="switchTab('app')">🎛️ 일상속의 노래</button>
   </div>
 
   <!-- TAB CONTENT -->
   <div class="tab-content">
 
-    <!-- ① 사용방법 탭 (첫 화면) -->
+    <!-- ① 사용방법 -->
     <div id="tab-guide" class="section-panel active">
       <div class="guide-hero">
-        <span class="hero-icon">🎧</span>
-        <h2>일상속의 소리로 비트를 만들어보세요</h2>
-        <p>주변의 소리를 녹음하면 AI가 분석해서 자동으로 비트를 만들어드려요.<br>영상도 함께 찍으면 비트에 맞춰 자동 편집됩니다.</p>
+        <span class="hero-icon">🎮</span>
+        <h2>일상속의 노래 v3 — 8채널 샘플러 워크스테이션</h2>
+        <p>소리를 샘플링하고 AI가 8채널 합주 악보를 생성합니다.<br>슈퍼패미컴 SPC700 칩셋 스타일의 Chiptune 음악을 만들어보세요.</p>
       </div>
-
       <div class="guide-steps">
         <div class="guide-step">
           <div class="step-num">01</div>
           <div class="step-body">
             <strong>Gemini API 키 준비</strong>
-            <p><a href="https://aistudio.google.com" target="_blank" style="color:var(--green-dark);font-weight:700;">aistudio.google.com</a>에서 무료로 API 키를 발급받으세요. 로그인 후 "Get API Key" 버튼을 클릭하면 됩니다.</p>
+            <p><a href="https://aistudio.google.com" target="_blank" style="color:var(--teal);font-weight:700;">aistudio.google.com</a>에서 API 키를 발급받으세요.</p>
           </div>
         </div>
         <div class="guide-step">
           <div class="step-num">02</div>
           <div class="step-body">
-            <strong>소리 녹음 (1~5개)</strong>
-            <p>🎵 비트 메이커 탭으로 이동해서 REC 버튼을 눌러 3초간 소리를 녹음하세요. 손뼉, 발소리, 컵 두드리기 등 주변의 어떤 소리든 OK!</p>
+            <strong>채널 추가 & 샘플 등록</strong>
+            <p>처음엔 CH0 하나만 있어요. [+ 채널 추가] 버튼으로 최대 8개까지 늘릴 수 있습니다. 🎤 REC로 녹음하거나 📁 파일로 업로드하세요. 악기명에 "보이스"가 들어가면 피크 클립 없이 원본 전체를 사용합니다.</p>
           </div>
         </div>
         <div class="guide-step">
           <div class="step-num">03</div>
           <div class="step-body">
-            <strong>영상 촬영 (선택사항)</strong>
-            <p>각 소리에 어울리는 짧은 영상을 찍어두면, 비트가 재생될 때 영상이 함께 나옵니다. 안 찍어도 괜찮아요!</p>
+            <strong>장르 / 분위기 설정</strong>
+            <p>프리셋 버튼을 고르거나 직접 텍스트를 입력해 원하는 음악 스타일을 지정하세요. Gemini가 분위기를 반영해 작곡합니다.</p>
           </div>
         </div>
         <div class="guide-step">
           <div class="step-num">04</div>
           <div class="step-body">
-            <strong>API 키 입력 후 비트 생성!</strong>
-            <p>API 키를 입력하고 "비트 생성 및 재생 시작" 버튼을 누르세요. AI가 소리를 분석하고 자동으로 비트 패턴을 만들어 재생합니다.</p>
+            <strong>음악 생성 & 제어</strong>
+            <p>🎵 생성 버튼을 누르면 8마디 Chiptune 악보가 만들어집니다. 볼륨·피치 슬라이더로 채널을 조절하고, BPM 슬라이더로 속도를 바꾸고, WAV로 다운로드까지 할 수 있어요.</p>
           </div>
         </div>
       </div>
-
       <div class="guide-note">
-        <strong>💡 팁</strong> — 킥 드럼 느낌의 묵직한 소리, 스네어 느낌의 탁 소리, 하이햇 느낌의 딱 소리를 각각 녹음하면 더 풍부한 비트가 만들어집니다! 마이크와 카메라 권한 허용이 필요합니다.
+        <strong>💡 v3 신기능</strong> — 채널별 볼륨/피치 슬라이더 · BPM 실시간 조절 · 장르 직접입력 · 샘플 미리듣기 · WAV 다운로드 · 생성 히스토리(최근 5개) · 루프 카운터 · 보이스 채널 원본 재생
       </div>
     </div>
 
-    <!-- ② 만든 목적 탭 -->
+    <!-- ② 만든 목적 -->
     <div id="tab-purpose" class="section-panel">
       <div class="purpose-section">
         <h3>만든 목적</h3>
-
-        <div class="purpose-card">
-          <span class="pc-icon">🌍</span>
-          <h4>일상 속 소리의 재발견</h4>
-          <p>우리 주변에는 수많은 소리가 있습니다. 책상을 두드리는 소리, 발걸음 소리, 빗소리... 이 앱은 그 평범한 소리들이 사실 훌륭한 악기가 될 수 있다는 것을 체험하게 해줍니다.</p>
-        </div>
-
-        <div class="purpose-card">
-          <span class="pc-icon">🤖</span>
-          <h4>AI와 함께하는 창작</h4>
-          <p>Google의 Gemini AI가 녹음된 소리를 분석해 어떤 악기 역할에 어울리는지 파악하고, 최적의 비트 패턴을 자동 설계합니다. 음악 지식 없이도 누구나 비트 메이커가 될 수 있습니다.</p>
-        </div>
-
-        <div class="purpose-card">
-          <span class="pc-icon">🎬</span>
-          <h4>소리와 영상의 융합</h4>
-          <p>단순히 소리를 재생하는 것에서 나아가, 직접 찍은 영상이 비트에 맞춰 자동 편집되는 경험을 제공합니다. 나만의 뮤직비디오를 즉석에서 만드는 것과 같은 즐거움을 줍니다.</p>
-        </div>
-
-        <div class="purpose-card">
-          <span class="pc-icon">✨</span>
-          <h4>창의적 표현의 문턱 낮추기</h4>
-          <p>악기를 다룰 줄 몰라도, 음악 이론을 몰라도 괜찮습니다. 스마트폰 하나와 주변의 소리만 있으면 자신만의 음악을 만들 수 있다는 것을 보여주고 싶었습니다.</p>
-        </div>
+        <div class="purpose-card"><span class="pc-icon">🌍</span><h4>일상 속 소리의 재발견</h4><p>책상 두드리는 소리, 발걸음, 빗소리... 평범한 소리들이 훌륭한 악기가 될 수 있다는 것을 체험하게 해줍니다.</p></div>
+        <div class="purpose-card"><span class="pc-icon">🤖</span><h4>AI 작곡 × 피치 변조 연주</h4><p>Gemini AI가 8채널 화음 ABC 악보를 생성하고, 각 샘플의 playbackRate를 음정에 맞게 실시간 조절합니다.</p></div>
+        <div class="purpose-card"><span class="pc-icon">🎮</span><h4>슈퍼패미컴 SPC700 오마주</h4><p>1990년대 SNES의 전설적인 음원 칩 SPC700의 8채널 샘플 기반 연주 방식을 웹 브라우저에서 재현합니다.</p></div>
+        <div class="purpose-card"><span class="pc-icon">✨</span><h4>창의적 표현의 문턱 낮추기</h4><p>악기를 몰라도, 음악 이론을 몰라도 괜찮습니다. 스마트폰 하나와 주변 소리만으로 Chiptune 음악을 만들 수 있어요.</p></div>
       </div>
     </div>
 
-    <!-- ③ 비트 메이커 탭 (기존 앱) -->
+    <!-- ③ SPC700 MAIN APP -->
     <div id="tab-app" class="section-panel">
-      <div class="info-grid">
-        <div class="info-card">
-          <div class="ic-title">01. SOUND CAPTURE</div>
-          <p>3초간 주변의 소리를 녹음하세요. Gemini가 악기 성격을 분석합니다.</p>
-        </div>
-        <div class="info-card">
-          <div class="ic-title">02. VIDEO SYNC</div>
-          <p>소리에 어울리는 영상을 찍으세요. 비트에 맞춰 자동 편집됩니다.</p>
-        </div>
-      </div>
 
+      <!-- Visualizer -->
       <div class="viz-wrap">
+        <span class="viz-label">AUDIO SPECTRUM</span>
         <canvas id="canvas"></canvas>
       </div>
 
-      <div class="progress-wrap">
-        <div id="btnProgress" style="width: 0%; height: 100%; background: var(--green-grad); transition: width 0.3s; border-radius: 4px;"></div>
+      <!-- Progress / Status -->
+      <div class="progress-wrap"><div id="btnProgress" style="width:0%"></div></div>
+      <div id="generateLabel"></div>
+
+      <!-- Master Info -->
+      <div class="master-info">
+        <div class="bpm-block">
+          <div class="bpm-display" id="bpmDisplay">—</div>
+          <span class="bpm-label">BPM</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div class="bpm-slider-wrap">
+            <span class="bpm-slider-label">SPEED</span>
+            <input type="range" class="bpm-slider" id="bpmSlider" min="60" max="200" value="120" oninput="onBpmSlider(this.value)">
+            <span class="bpm-slider-label" id="bpmSliderVal">120</span>
+          </div>
+        </div>
+        <div class="loop-counter" id="loopCounter">LOOP <span id="loopNum">0</span></div>
+        <div class="track-title-display" id="trackTitleDisplay">샘플을 등록하고 음악을 생성하세요</div>
       </div>
 
-      <div id="generateLabel" style="text-align: center; font-weight: 700; margin-bottom: 14px; color: var(--green-dark); min-height: 22px; font-size: 14px;">
+      <!-- Channel Strips (dynamic) -->
+      <div class="ch-strips" id="chStrips"></div>
+
+      <!-- Add Channel Button -->
+      <button class="add-ch-btn" id="addChBtn" onclick="addChannel()">＋ 채널 추가 (현재 <span id="chCountLabel">1</span>/8)</button>
+
+      <!-- Genre / Mood -->
+      <div class="genre-section">
+        <span class="genre-title">GENRE / MOOD — 장르 및 분위기 설정</span>
+        <div class="genre-preset-row" id="genrePresets"></div>
+        <input type="text" class="genre-input" id="genreInput" placeholder="직접 입력: 예) 새벽 편의점 감성, 긴장감 넘치는 보스전, 봄날 마을 산책...">
       </div>
 
-      <div id="soundSlots"></div>
+      <!-- ABC Score -->
+      <div class="score-section">
+        <div class="score-title">ABC NOTATION — GENERATED SCORE</div>
+        <div id="abcScoreDisplay">아직 악보가 없습니다. 생성 버튼을 누르세요.</div>
+      </div>
 
+      <!-- History -->
+      <div class="history-section">
+        <span class="history-title">GENERATION HISTORY — 생성 히스토리 (최근 5개)</span>
+        <div class="history-list" id="historyList">
+          <div class="history-empty">아직 생성된 음악이 없습니다.</div>
+        </div>
+      </div>
+
+      <!-- Model + API -->
       <div class="model-row">
-        <label>GEMINI MODEL</label>
-        <select class="model-select" id="modelSelect" onchange="updateModelBadge()">
-          <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
+        <label class="field-label">GEMINI MODEL</label>
+        <select class="model-select" id="modelSelect">
           <option value="gemini-3.1-flash-lite-preview">gemini-3.1-flash-lite-preview</option>
-          <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview</option>
+          <option value="gemini-3-flash-preview">gemini-3-flash-preview</option>
+          <option value="gemini-3.5-flash">gemini-3.5-flash</option>
         </select>
-        <span class="model-badge" id="modelBadge">⚡ Flash · 빠르고 균형잡힌 모델</span>
       </div>
-
       <div class="api-row">
-        <input type="password" id="apiKey" placeholder="Gemini API Key를 입력하세요 (aistudio.google.com에서 발급)">
+        <label class="field-label">GEMINI API KEY</label>
+        <input type="password" class="api-input" id="apiKey" placeholder="aistudio.google.com 에서 발급">
       </div>
 
-      <button class="generate-btn" id="generateBtn" onclick="generateBeat()">
-        비트 생성 및 재생 시작 →
-      </button>
+      <!-- Generate Button -->
+      <button class="generate-btn" id="generateBtn" onclick="generateMusic()">🎵 8마디 전설의 음악 생성하기</button>
 
+      <!-- Action Row -->
+      <div class="action-row">
+        <button class="download-btn" id="downloadBtn" onclick="downloadWAV()" disabled>💾 WAV 다운로드</button>
+      </div>
+
+      <!-- Log -->
       <div id="logBox"></div>
+
     </div>
+  </div>
 
-  </div><!-- /.tab-content -->
-
-  <div class="page-footer">마지막 업데이트 · 2026-05-15 오후 4:30</div>
-
-</div><!-- /.app -->
+  <div class="page-footer">일상속의 노래 v3 · 2026-05-22</div>
+</div>
 
 <!-- PLAYBACK OVERLAY -->
 <div id="playOverlay">
-  <h2 style="margin-bottom:10px; color:var(--green-solid); font-family:'Space Mono',monospace;">BEAT PLAYING</h2>
-  <p id="beatDesc" style="margin-bottom:30px; color:var(--text-muted); font-size:13px;"></p>
-  <div id="playGrid" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; max-width:700px;"></div>
-  <button onclick="stopPlayback()" style="margin-top:40px; padding:14px 38px; border-radius:100px; border:1px solid #aaddcc; background:rgba(0,180,120,0.08); color:var(--text-main); cursor:pointer; font-weight:700; font-size:14px;">■ STOP</button>
+  <h2>▶ 일상속의 노래 PLAYING</h2>
+  <div id="beatDesc"></div>
+  <div id="loopCounterOverlay">LOOP <span id="loopNumOverlay">1</span></div>
+  <div class="overlay-viz-wrap"><canvas id="overlayCanvas"></canvas></div>
+  <div class="play-grid" id="playGrid"></div>
+  <button class="stop-btn" onclick="stopPlayback()">■ STOP</button>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-//  iOS Safari 완전 호환 오디오 엔진
-//  핵심 원칙:
-//  1. AudioContext는 유저 터치 직접 핸들러 안에서 생성/resume
-//  2. decodeAudioData는 Promise+Callback 양쪽 지원
-//  3. MediaRecorder 미지원 시 ScriptProcessor로 PCM 직접 녹음
-//  4. 모든 오디오 노드는 반드시 destination까지 연결
-// ═══════════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════════════
+   SPC700 8-CHANNEL SAMPLER WORKSTATION v3
+   ─ Dynamic 1→8 channels
+   ─ Voice detection (no trim)
+   ─ Per-channel volume + detune sliders
+   ─ BPM real-time adjustment
+   ─ Genre/mood preset + freeform input
+   ─ Generation history (5 entries)
+   ─ Loop counter
+   ─ WAV download
+   ─ Sample preview
+   ─ 8-bar composition
+   ═══════════════════════════════════════════════════════════ */
 
-// ── TAB SWITCH ──
+const MAX_CH = 8;
+const CH_DEFAULTS = [
+  { name: '8비트 베이스',   emoji: '🎸' },
+  { name: '스퀘어 리드',   emoji: '🎹' },
+  { name: '펄스 멜로디',   emoji: '🎵' },
+  { name: '삼각파 패드',   emoji: '🎶' },
+  { name: '노이즈 드럼',   emoji: '🥁' },
+  { name: '퍼커션 FX',    emoji: '🔔' },
+  { name: '스네어 / 클랩', emoji: '👏' },
+  { name: '하이햇 / 심벌', emoji: '✨' },
+];
+
+const GENRE_PRESETS = [
+  { label: '🏰 던전 RPG',    text: '어둡고 긴장감 있는 던전 탐험 RPG BGM' },
+  { label: '🌸 마을 산책',   text: '평화롭고 따뜻한 봄날 마을 산책 BGM' },
+  { label: '⚔️ 보스전',      text: '웅장하고 긴박한 보스 배틀 BGM' },
+  { label: '🎪 타이틀',      text: '경쾌하고 설레는 게임 타이틀 BGM' },
+  { label: '🌙 야상곡',      text: '조용하고 몽환적인 밤 분위기 야상곡' },
+  { label: '🚀 스페이스',    text: '신비롭고 광활한 우주 탐험 BGM' },
+  { label: '🏆 승리',        text: '짧고 경쾌한 승리 팡파레 BGM' },
+  { label: '✏️ 직접 입력',   text: '' },
+];
+
+const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
+const getModel = () => document.getElementById('modelSelect')?.value || 'gemini-2.5-flash-preview-05-20';
+
+// ── STATE ──
+let activeChannels  = 1;
+let audioRecordings = Array(MAX_CH).fill(null);
+let instNames       = CH_DEFAULTS.map(d => d.name);
+let volValues       = Array(MAX_CH).fill(0.75);    // per-channel volume
+let detuneValues    = Array(MAX_CH).fill(0);        // per-channel detune (cents)
+let muteStates      = Array(MAX_CH).fill(false);
+let soloStates      = Array(MAX_CH).fill(false);
+let isRecordingArr  = Array(MAX_CH).fill(false);
+let generatedTracks = null;
+let decodedBuffers  = {};
+let audioCtx        = null;
+let analyserNode    = null;
+let playTimers      = [];
+let isPlaying       = false;
+let loopCount       = 0;
+let currentBpm      = 120;
+let historyList     = [];   // max 5 entries
+let currentHistIdx  = -1;
+
+// iOS
+const isIOS    = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const needsPCM = isIOS || (isSafari && !window.MediaRecorder);
+
+// ── TAB ──
 function switchTab(name) {
   document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  const btns = document.querySelectorAll('.tab-btn');
-  const map = { guide: 0, purpose: 1, app: 2 };
-  btns[map[name]].classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  const map = {guide:0,purpose:1,app:2};
+  document.querySelectorAll('.tab-btn')[map[name]].classList.add('active');
 }
 
-// ── STATE ──
-const NUM = 5;
-let audioRecordings  = Array(NUM).fill(null); // Blob (WAV on iOS, webm elsewhere)
-let videoRecordings  = Array(NUM).fill(null);
-let analysisResults  = Array(NUM).fill(null);
-let beatPattern      = null;
-let audioCtx         = null;
-let analyserNode     = null;
-let playTimers       = [];
-let isRecordingAudio = Array(NUM).fill(false);
-let isRecordingVideo = Array(NUM).fill(false);
-
-const GEMINI_API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-function getModel() { return document.getElementById('modelSelect')?.value || 'gemini-3-flash-preview'; }
-const MODEL_INFO = {
-  'gemini-3-flash-preview':       '⚡ Flash · 빠르고 균형잡힌 모델',
-  'gemini-3.1-flash-lite-preview':'🪶 Flash Lite · 가볍고 초고속 모델',
-  'gemini-3.1-pro-preview':       '🧠 Pro · 최고 성능 고품질 모델',
-};
-function updateModelBadge() {
-  const sel = document.getElementById('modelSelect').value;
-  document.getElementById('modelBadge').textContent = MODEL_INFO[sel] || sel;
-}
-
-// ── iOS 감지 ──
-const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
-              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const needsPCMRecord = isIOS || (isSafari && !window.MediaRecorder);
-
-// ── AudioContext 초기화 (반드시 유저 액션 안에서) ──
-function ensureAudioCtx() {
+// ── AUDIO CTX ──
+async function ensureAudioCtx() {
   if (!audioCtx || audioCtx.state === 'closed') {
     const AC = window.AudioContext || window.webkitAudioContext;
     audioCtx = new AC();
     analyserNode = audioCtx.createAnalyser();
-    analyserNode.fftSize = 128;
-    analyserNode.connect(audioCtx.destination); // analyser → destination
+    analyserNode.fftSize = 256;
+    analyserNode.connect(audioCtx.destination);
   }
-  // iOS: suspended 상태면 resume (유저 액션 컨텍스트 안에서만 가능)
-  if (audioCtx.state === 'suspended') {
-    return audioCtx.resume();
-  }
+  if (audioCtx.state === 'suspended') return audioCtx.resume();
   return Promise.resolve();
 }
 
-// ── decodeAudioData 크로스브라우저 (iOS 구버전은 Promise 미지원) ──
 function decodeAudio(arrayBuffer) {
   return new Promise((resolve, reject) => {
-    // 새 AudioContext 사용 (iOS에서 state 문제 우회)
     const AC = window.AudioContext || window.webkitAudioContext;
-    const tmpCtx = new AC();
-    const cb = (buf) => { tmpCtx.close(); resolve(buf); };
-    const eb = (e)   => { tmpCtx.close(); reject(e); };
-    const result = tmpCtx.decodeAudioData(arrayBuffer, cb, eb);
-    // 최신 브라우저는 Promise 반환하기도 함
-    if (result && typeof result.then === 'function') {
-      result.then(buf => { tmpCtx.close(); resolve(buf); }).catch(eb);
-    }
+    const tmp = new AC();
+    const ok = b => { tmp.close(); resolve(b); };
+    const er = e => { tmp.close(); reject(e); };
+    const r = tmp.decodeAudioData(arrayBuffer, ok, er);
+    if (r && typeof r.then === 'function') r.then(b=>{tmp.close();resolve(b);}).catch(er);
   });
 }
 
-// ── BUILD SLOTS ──
-const soundSlots = document.getElementById('soundSlots');
-const soundNames = ['소리 #1', '소리 #2', '소리 #3', '소리 #4', '소리 #5'];
-for (let i = 0; i < NUM; i++) {
-  soundSlots.insertAdjacentHTML('beforeend', `
-    <div class="sound-slot" id="ss-${i}">
-      <div class="slot-num">${i+1}</div>
-      <div class="slot-info">
-        <div class="slot-name" id="ss-name-${i}">${soundNames[i]}</div>
-        <div class="slot-status" id="ss-status-${i}">대기 중...</div>
-      </div>
-      <div id="ss-badge-${i}" style="display:none" class="instrument-badge">-</div>
-      <button class="btn-rec" id="ss-btn-${i}" onclick="recordAudio(${i})">REC</button>
-    </div>
-  `);
-}
-
-// ── VISUALIZER ──
-let vizRunning = false;
-function initVisualizer() {
-  if (vizRunning) return;
-  vizRunning = true;
-  const canvas = document.getElementById('canvas');
-  const ctx2   = canvas.getContext('2d');
-  const data   = new Uint8Array(analyserNode ? analyserNode.frequencyBinCount : 64);
-
-  function resize() {
-    canvas.width  = canvas.offsetWidth  * devicePixelRatio;
-    canvas.height = canvas.offsetHeight * devicePixelRatio;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  function draw() {
-    requestAnimationFrame(draw);
-    if (!analyserNode) return;
-    analyserNode.getByteFrequencyData(data);
-    ctx2.clearRect(0, 0, canvas.width, canvas.height);
-    const W = canvas.width, H = canvas.height;
-    const bw = W / data.length;
-    data.forEach((v, i) => {
-      const pct = v / 255;
-      const h   = pct * H;
-      const g   = ctx2.createLinearGradient(0, H - h, 0, H);
-      g.addColorStop(0, `rgba(0,180,100,${0.5 + pct * 0.5})`);
-      g.addColorStop(1, 'rgba(0,100,60,0.2)');
-      ctx2.fillStyle = g;
-      ctx2.fillRect(i * bw + 1, H - h, bw - 2, h);
-    });
-  }
-  draw();
-}
-
-// ── PCM 녹음 (iOS Safari / MediaRecorder 미지원 환경) ──
-function recordPCM(stream, durationMs) {
-  return new Promise((resolve, reject) => {
-    const AC  = window.AudioContext || window.webkitAudioContext;
-    const ctx = new AC();
-    const src = ctx.createMediaStreamSource(stream);
-    const bufSize = 4096;
-    const proc = ctx.createScriptProcessor(bufSize, 1, 1);
-    const chunks = [];
-
-    proc.onaudioprocess = (e) => {
-      const ch = e.inputBuffer.getChannelData(0);
-      chunks.push(new Float32Array(ch));
-    };
-    src.connect(proc);
-    proc.connect(ctx.destination);
-
-    setTimeout(() => {
-      proc.disconnect();
-      src.disconnect();
-      stream.getTracks().forEach(t => t.stop());
-
-      const sampleRate   = ctx.sampleRate;
-      const totalSamples = chunks.reduce((a, c) => a + c.length, 0);
-      const merged       = new Float32Array(totalSamples);
-      let offset = 0;
-      chunks.forEach(c => { merged.set(c, offset); offset += c.length; });
-
-      ctx.close();
-      resolve(float32ToWavBlob(merged, sampleRate));
-    }, durationMs);
-  });
-}
-
-// ── Float32 → WAV Blob ──
-function float32ToWavBlob(samples, sampleRate) {
+// ── WAV HELPERS ──
+function float32ToWavBlob(samples, sr) {
   const dataLen = samples.length * 2;
-  const ab      = new ArrayBuffer(44 + dataLen);
-  const view    = new DataView(ab);
-  const ws = (o, s) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
-  ws(0, 'RIFF'); view.setUint32(4, 36 + dataLen, true);
-  ws(8, 'WAVE'); ws(12, 'fmt ');
-  view.setUint32(16, 16, true); view.setUint16(20, 1, true);
-  view.setUint16(22, 1, true);  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true);
-  view.setUint16(34, 16, true); ws(36, 'data');
-  view.setUint32(40, dataLen, true);
-  let off = 44;
-  for (let i = 0; i < samples.length; i++) {
-    const s = Math.max(-1, Math.min(1, samples[i]));
-    view.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-    off += 2;
+  const ab = new ArrayBuffer(44 + dataLen);
+  const v  = new DataView(ab);
+  const ws = (o, s) => { for (let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  ws(0,'RIFF'); v.setUint32(4, 36+dataLen, true);
+  ws(8,'WAVE'); ws(12,'fmt ');
+  v.setUint32(16,16,true); v.setUint16(20,1,true);
+  v.setUint16(22,1,true);  v.setUint32(24,sr,true);
+  v.setUint32(28,sr*2,true); v.setUint16(32,2,true);
+  v.setUint16(34,16,true); ws(36,'data');
+  v.setUint32(40,dataLen,true);
+  let off=44;
+  for (let i=0;i<samples.length;i++) {
+    const s=Math.max(-1,Math.min(1,samples[i]));
+    v.setInt16(off, s<0?s*0x8000:s*0x7FFF, true); off+=2;
   }
-  return new Blob([ab], { type: 'audio/wav' });
+  return new Blob([ab],{type:'audio/wav'});
 }
 
 function getSupportedMimeType(types) {
   if (!window.MediaRecorder) return '';
-  for (const t of types) {
-    if (t === '' || MediaRecorder.isTypeSupported(t)) return t;
-  }
+  for (const t of types) { if (t===''||MediaRecorder.isTypeSupported(t)) return t; }
   return '';
+}
+
+function recordPCM(stream, ms) {
+  return new Promise((resolve) => {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    const src = ctx.createMediaStreamSource(stream);
+    const proc = ctx.createScriptProcessor(4096,1,1);
+    const chunks = [];
+    proc.onaudioprocess = e => chunks.push(new Float32Array(e.inputBuffer.getChannelData(0)));
+    src.connect(proc); proc.connect(ctx.destination);
+    setTimeout(() => {
+      proc.disconnect(); src.disconnect();
+      stream.getTracks().forEach(t=>t.stop());
+      const sr = ctx.sampleRate;
+      const total = chunks.reduce((a,c)=>a+c.length,0);
+      const merged = new Float32Array(total);
+      let off2=0; chunks.forEach(c=>{merged.set(c,off2);off2+=c.length;});
+      ctx.close(); resolve(float32ToWavBlob(merged,sr));
+    }, ms);
+  });
+}
+
+// ── PEAK EXTRACT (0.5s) — skip if "보이스" in name ──
+function isVoiceChannel(i) {
+  return (instNames[i]||'').includes('보이스');
+}
+
+async function extractPeakClip(blob, i) {
+  if (isVoiceChannel(i)) {
+    log(`🎤 CH${i} 보이스 채널 — 원본 전체 사용`,'info');
+    return blob;
+  }
+  try {
+    const ab  = await blob.arrayBuffer();
+    const buf = await decodeAudio(ab.slice(0));
+    const sr  = buf.sampleRate;
+    let peakMs = 0, maxE = 0;
+    const data0 = buf.getChannelData(0);
+    const step = Math.floor(sr * 0.05);
+    for (let s=0; s<buf.length-step; s+=step) {
+      let e=0;
+      for (let j=s;j<s+step&&j<buf.length;j++) e+=data0[j]*data0[j];
+      if (e>maxE) { maxE=e; peakMs=Math.floor((s/sr)*1000); }
+    }
+    const start  = Math.floor((peakMs/1000)*sr);
+    const clipLen= Math.floor(0.5*sr);
+    const end    = Math.min(start+clipLen, buf.length);
+    const actual = end-start;
+    if (actual<=0) return blob;
+    const AC     = window.AudioContext||window.webkitAudioContext;
+    const offCtx = new OfflineAudioContext(buf.numberOfChannels,actual,sr);
+    const offBuf = offCtx.createBuffer(buf.numberOfChannels,actual,sr);
+    for (let ch2=0;ch2<buf.numberOfChannels;ch2++) offBuf.copyToChannel(buf.getChannelData(ch2).slice(start,end),ch2);
+    const s2=offCtx.createBufferSource(); s2.buffer=offBuf; s2.connect(offCtx.destination); s2.start();
+    const rendered = await offCtx.startRendering();
+    const nCh=rendered.numberOfChannels, len=rendered.length;
+    const pcm=new Float32Array(len*nCh);
+    for (let ch2=0;ch2<nCh;ch2++) { const cd=rendered.getChannelData(ch2); for (let j=0;j<len;j++) pcm[j*nCh+ch2]=cd[j]; }
+    return float32ToWavBlob(pcm, sr);
+  } catch(e) { return blob; }
+}
+
+// ── DRAW WAVEFORM ──
+function drawWaveform(i, blob) {
+  const canvas = document.getElementById(`ch-wave-${i}`);
+  if (!canvas) return;
+  blob.arrayBuffer().then(ab => decodeAudio(ab)).then(buf => {
+    const data = buf.getChannelData(0);
+    const ctx2 = canvas.getContext('2d');
+    const W = canvas.width = canvas.offsetWidth * devicePixelRatio;
+    const H = canvas.height = canvas.offsetHeight * devicePixelRatio;
+    ctx2.clearRect(0,0,W,H);
+    ctx2.strokeStyle = '#00dca0';
+    ctx2.lineWidth = 1;
+    ctx2.beginPath();
+    const step = Math.ceil(data.length / W);
+    for (let x=0;x<W;x++) {
+      let min=1,max=-1;
+      for (let j=x*step;j<(x+1)*step&&j<data.length;j++) {
+        if(data[j]<min) min=data[j]; if(data[j]>max) max=data[j];
+      }
+      const y1 = (1-max)/2*H, y2 = (1-min)/2*H;
+      if(x===0) ctx2.moveTo(x,y1); else ctx2.lineTo(x,y1);
+      ctx2.lineTo(x,y2);
+    }
+    ctx2.stroke();
+  }).catch(()=>{});
+}
+
+// ── CHANNEL STRIP BUILDER ──
+function buildStrip(i) {
+  const div = document.createElement('div');
+  div.className = 'ch-strip';
+  div.id = `chs-${i}`;
+  div.innerHTML = `
+    <div class="ch-row1">
+      <div class="ch-num">CH${i}<small>SPC</small></div>
+      <div class="ch-center">
+        <input class="ch-name-input" id="ch-name-${i}" value="${CH_DEFAULTS[i].name}"
+               oninput="instNames[${i}]=this.value" placeholder="악기 이름">
+        <div class="ch-meta">
+          <div class="ch-indicator" id="ch-ind-${i}"></div>
+          <span class="ch-status" id="ch-st-${i}">대기 중</span>
+        </div>
+      </div>
+      <canvas class="ch-wave" id="ch-wave-${i}" width="80" height="24"></canvas>
+      <button class="btn-sm btn-preview" id="ch-prev-${i}" onclick="previewSample(${i})" title="미리듣기">▶</button>
+      <button class="btn-sm btn-rec" id="ch-rec-${i}" onclick="recordAudio(${i})">🎤 REC</button>
+      <label class="btn-file-label" id="ch-filelabel-${i}" for="ch-file-${i}">📁 파일</label>
+      <input type="file" class="btn-file" id="ch-file-${i}" accept="audio/*" onchange="loadAudioFile(${i},this)">
+      <button class="btn-sm btn-mute" id="ch-mute-${i}" onclick="toggleMute(${i})">M</button>
+      <button class="btn-sm btn-solo" id="ch-solo-${i}" onclick="toggleSolo(${i})">S</button>
+    </div>
+    <div class="ch-row2">
+      <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:1px;">PARAMS</div>
+      <div class="slider-group">
+        <div class="slider-group-label">VOL <span id="vol-val-${i}">75%</span></div>
+        <input type="range" class="ch-slider" id="ch-vol-${i}" min="0" max="100" value="75"
+               oninput="onVolChange(${i},this.value)">
+      </div>
+      <div class="slider-group">
+        <div class="slider-group-label">DETUNE <span id="det-val-${i}">0¢</span></div>
+        <input type="range" class="ch-slider detune" id="ch-det-${i}" min="-100" max="100" value="0"
+               oninput="onDetuneChange(${i},this.value)">
+      </div>
+    </div>
+  `;
+  return div;
+}
+
+function addChannel() {
+  if (activeChannels >= MAX_CH) return;
+  const strips = document.getElementById('chStrips');
+  strips.appendChild(buildStrip(activeChannels));
+  activeChannels++;
+  document.getElementById('chCountLabel').textContent = activeChannels;
+  document.getElementById('addChBtn').disabled = activeChannels >= MAX_CH;
+  if (activeChannels >= MAX_CH) {
+    document.getElementById('addChBtn').textContent = '✓ 최대 8채널 도달';
+  } else {
+    document.getElementById('addChBtn').querySelector
+      ? document.getElementById('addChBtn').innerHTML =
+        `＋ 채널 추가 (현재 <span id="chCountLabel">${activeChannels}</span>/8)`
+      : null;
+    document.getElementById('addChBtn').innerHTML =
+      `＋ 채널 추가 (현재 <span id="chCountLabel">${activeChannels}</span>/8)`;
+  }
+}
+
+// Init with CH0
+document.getElementById('chStrips').appendChild(buildStrip(0));
+
+// ── SLIDER HANDLERS ──
+function onVolChange(i, val) {
+  volValues[i] = val / 100;
+  document.getElementById(`vol-val-${i}`).textContent = val + '%';
+}
+function onDetuneChange(i, val) {
+  detuneValues[i] = parseInt(val);
+  document.getElementById(`det-val-${i}`).textContent = val + '¢';
+}
+function onBpmSlider(val) {
+  document.getElementById('bpmSliderVal').textContent = val;
+  if (generatedTracks) {
+    generatedTracks.bpm = parseInt(val);
+    document.getElementById('bpmDisplay').textContent = val;
+    currentBpm = parseInt(val);
+    if (isPlaying) {
+      // Restart playback with new BPM
+      const pt = parsedTracksCache;
+      if (pt) {
+        stopPlayback();
+        setTimeout(() => { isPlaying=true; document.getElementById('playOverlay').classList.add('active'); scheduleAllChannels(pt, currentBpm); }, 100);
+      }
+    }
+  }
+}
+
+// ── SAMPLE PREVIEW ──
+async function previewSample(i) {
+  if (!audioRecordings[i]) { log(`⚠ CH${i} 샘플 없음`,'err'); return; }
+  await ensureAudioCtx();
+  try {
+    const ab = await audioRecordings[i].arrayBuffer();
+    const buf = await decodeAudio(ab);
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    const gain = audioCtx.createGain();
+    gain.gain.value = volValues[i];
+    src.detune.value = detuneValues[i] * 100; // cents
+    src.connect(gain); gain.connect(analyserNode);
+    src.start();
+    log(`▶ CH${i} 미리듣기`,'info');
+  } catch(e) { log(`⚠ CH${i} 미리듣기 실패: ${e.message}`,'err'); }
+}
+
+// ── AUDIO FILE UPLOAD ──
+async function loadAudioFile(i, input) {
+  if (!input.files[0]) return;
+  const file = input.files[0];
+  setChStatus(i, '파일 읽는 중...', '');
+  try {
+    const ab  = await file.arrayBuffer();
+    const buf = await decodeAudio(ab.slice(0));
+    const nCh2=buf.numberOfChannels, len=buf.length, sr=buf.sampleRate;
+    const pcm = new Float32Array(len*nCh2);
+    for (let ch2=0;ch2<nCh2;ch2++) { const cd=buf.getChannelData(ch2); for (let j=0;j<len;j++) pcm[j*nCh2+ch2]=cd[j]; }
+    audioRecordings[i] = float32ToWavBlob(pcm, sr);
+    document.getElementById(`chs-${i}`).classList.add('has-sample');
+    document.getElementById(`ch-filelabel-${i}`).classList.add('has-file');
+    document.getElementById(`ch-filelabel-${i}`).textContent = '✓ ' + file.name.slice(0,10);
+    setChStatus(i, `✓ ${file.name.slice(0,16)} (${buf.duration.toFixed(1)}s)`, 'ok');
+    log(`✅ CH${i} 파일 로드: ${file.name}`, 'ok');
+    drawWaveform(i, audioRecordings[i]);
+  } catch(e) {
+    setChStatus(i, '파일 오류: ' + e.message, 'err');
+    log(`⚠ CH${i} 파일 로드 실패: ${e.message}`, 'err');
+  }
 }
 
 // ── AUDIO RECORD ──
 async function recordAudio(i) {
-  if (isRecordingAudio[i]) return;
-  isRecordingAudio[i] = true;
-
-  const btn    = document.getElementById(`ss-btn-${i}`);
-  const slot   = document.getElementById(`ss-${i}`);
-  const status = document.getElementById(`ss-status-${i}`);
-
-  btn.textContent = '3s...';
-  btn.classList.add('recording');
-  slot.classList.add('recording');
-  status.textContent = '녹음 중...';
-
-  let stream = null;
-  let micSrc = null;
-  let recordingAnalyser = null; // ★ 녹음용 독립 분석 노드 변수
-
+  if (isRecordingArr[i]) return;
+  isRecordingArr[i] = true;
+  const btn = document.getElementById(`ch-rec-${i}`);
+  const strip = document.getElementById(`chs-${i}`);
+  btn.textContent = '3s...'; btn.classList.add('recording');
+  strip.classList.add('recording');
+  setChStatus(i, '녹음 중...', '');
+  let stream=null, micSrc=null, recAnalyser=null;
   try {
     await ensureAudioCtx();
-
-    // 1. 마이크 입력 활성화
-    stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    stream = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
     micSrc = audioCtx.createMediaStreamSource(stream);
-    
-    // ★ 핵심 수정: 스피커와 연결되지 않은 "독립된 녹음용 분석 노드"를 새로 만듭니다.
-    // 이렇게 하면 화면에 시각화(움직임)는 나오지만, 스피커로는 소리가 절대 나가지 않습니다.
-    recordingAnalyser = audioCtx.createAnalyser();
-    recordingAnalyser.fftSize = 128;
-    micSrc.connect(recordingAnalyser); // 마이크 -> 녹음용 분석기 (스피커 연결 X)
-
-    // 시각화 함수가 메인 analyserNode 대신 이 recordingAnalyser를 보게 일시적으로 교체
-    const originalAnalyser = analyserNode;
-    analyserNode = recordingAnalyser;
-    initVisualizer();
-
-    let secs = 3;
-    const tick = setInterval(() => { secs--; if (secs > 0) btn.textContent = `${secs}s...`; }, 1000);
-
+    recAnalyser = audioCtx.createAnalyser(); recAnalyser.fftSize=128;
+    micSrc.connect(recAnalyser);
+    const origAnalyser = analyserNode;
+    analyserNode = recAnalyser; initVisualizer();
+    let secs=3;
+    const tick=setInterval(()=>{ secs--; if(secs>0) btn.textContent=`${secs}s...`; },1000);
     let blob;
-    if (needsPCMRecord || !window.MediaRecorder) {
-      blob = await recordPCM(stream, 3000);
+    if (needsPCM || !window.MediaRecorder) {
+      blob = await recordPCM(stream,3000);
     } else {
-      const mimeType = getSupportedMimeType(['audio/webm;codecs=opus', 'audio/webm', '']);
-      const rec    = new MediaRecorder(stream, mimeType ? { mimeType } : {});
-      const chunks = [];
-      rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-      
-      blob = await new Promise(res => {
-        rec.onstop = () => { res(new Blob(chunks, { type: rec.mimeType })); };
-        rec.start();
-        setTimeout(() => rec.stop(), 3000);
-      });
+      const mt = getSupportedMimeType(['audio/webm;codecs=opus','audio/webm','']);
+      const rec= new MediaRecorder(stream, mt?{mimeType:mt}:{});
+      const chunks=[];
+      rec.ondataavailable = e=>{ if(e.data.size>0) chunks.push(e.data); };
+      blob = await new Promise(res=>{ rec.onstop=()=>res(new Blob(chunks,{type:rec.mimeType})); rec.start(); setTimeout(()=>rec.stop(),3000); });
     }
-
     clearInterval(tick);
-
-    // ★ 녹음 종료 후 시각화 노드를 원래(재생용) 노드로 원상복구
-    analyserNode = originalAnalyser;
-
-    // ★ 이전 질문에서 다룬 통화 모드 버그 해결: 마이크 전원 완전히 끄기
-    if (micSrc) micSrc.disconnect();
-    if (recordingAnalyser) recordingAnalyser.disconnect();
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-    }
-
-    audioRecordings[i] = blob;
-    btn.textContent = '✓ 완료';
-    btn.className = 'btn-rec done';
-    slot.className = 'sound-slot done';
-    status.textContent = '녹음 완료 · AI 분석 대기';
-    status.className = 'slot-status ok';
+    analyserNode = origAnalyser;
+    if(micSrc) micSrc.disconnect();
+    if(recAnalyser) recAnalyser.disconnect();
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    audioRecordings[i]=blob;
+    strip.classList.remove('recording'); strip.classList.add('has-sample');
+    btn.textContent='✓ 완료'; btn.classList.remove('recording'); btn.classList.add('done');
+    setChStatus(i,'녹음 완료','ok');
+    log(`✅ CH${i} 녹음 완료`,'ok');
+    drawWaveform(i, blob);
   } catch(e) {
-    if (stream) stream.getTracks().forEach(track => track.stop());
-    btn.textContent = 'ERROR';
-    status.textContent = '마이크 오류: ' + e.message;
-    status.className = 'slot-status err';
+    if(stream) stream.getTracks().forEach(t=>t.stop());
+    strip.classList.remove('recording');
+    btn.textContent='ERR'; btn.classList.remove('recording');
+    setChStatus(i,'마이크 오류: '+e.message,'err');
+    log(`⚠ CH${i} 오류: ${e.message}`,'err');
   }
-  isRecordingAudio[i] = false;
+  isRecordingArr[i]=false;
 }
-   
 
-// ── VIDEO RECORD ──
-async function recordVideo(i) {
-  if (isRecordingVideo[i]) return;
-  isRecordingVideo[i] = true;
-  const btn = document.getElementById(`vb-btn-${i}`);
-  const box = document.getElementById(`vb-${i}`);
-  const vid = document.getElementById(`vp-${i}`);
-  const ov  = document.getElementById(`vov-${i}`);
+function setChStatus(i, msg, cls) {
+  const el = document.getElementById(`ch-st-${i}`);
+  if(el) { el.textContent = msg; el.className = 'ch-status '+(cls||''); }
+}
 
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: 'environment' }, width: { ideal: 480 }, height: { ideal: 854 } },
-      audio: true
-    });
-    vid.srcObject = stream;
-    vid.play();
-    box.classList.add('recording');
-    box.classList.remove('done');
-    btn.textContent = '촬영 중 3s';
-    if (ov) ov.style.display = 'none';
+// ── MUTE / SOLO ──
+function toggleMute(i) {
+  muteStates[i] = !muteStates[i];
+  document.getElementById(`ch-mute-${i}`).classList.toggle('muted', muteStates[i]);
+  document.getElementById(`chs-${i}`).classList.toggle('muted', muteStates[i]);
+}
+function toggleSolo(i) {
+  soloStates[i] = !soloStates[i];
+  document.getElementById(`ch-solo-${i}`).classList.toggle('soloing', soloStates[i]);
+}
+function isChannelAudible(i) {
+  const anySolo = soloStates.some(Boolean);
+  if (anySolo) return soloStates[i];
+  return !muteStates[i];
+}
 
-    const mimeType = getSupportedMimeType(['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4', '']);
-    const rec    = window.MediaRecorder ? new MediaRecorder(stream, mimeType ? { mimeType } : {}) : null;
-    const chunks = [];
-
-    let secs = 3;
-    const tick = setInterval(() => { secs--; if (secs >= 0) btn.textContent = `촬영 중 ${secs}s`; }, 1000);
-
-    if (rec) {
-      rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-      rec.onstop = () => {
-        clearInterval(tick);
-        stream.getTracks().forEach(t => t.stop());
-        const blob = new Blob(chunks, { type: rec.mimeType || 'video/webm' });
-        videoRecordings[i] = blob;
-        vid.srcObject = null;
-        vid.src = URL.createObjectURL(blob);
-        vid.loop = true; vid.muted = true; vid.play();
-        box.classList.remove('recording'); box.classList.add('done');
-        btn.textContent = '✓ 촬영 완료'; btn.classList.add('done');
-        isRecordingVideo[i] = false;
-      };
-      rec.start();
-      setTimeout(() => rec.stop(), 3000);
+// ── GENRE PRESETS ──
+const genreContainer = document.getElementById('genrePresets');
+GENRE_PRESETS.forEach((p, idx) => {
+  const btn = document.createElement('button');
+  btn.className = 'genre-preset-btn';
+  btn.textContent = p.label;
+  btn.onclick = () => {
+    document.querySelectorAll('.genre-preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (p.text) {
+      document.getElementById('genreInput').value = p.text;
     } else {
-      // iOS 비디오: MediaRecorder 미지원
-      setTimeout(() => {
-        clearInterval(tick);
-        stream.getTracks().forEach(t => t.stop());
-        vid.srcObject = null;
-        box.classList.remove('recording');
-        btn.textContent = '⚠ iOS 비디오 미지원';
-        isRecordingVideo[i] = false;
-      }, 3000);
+      document.getElementById('genreInput').focus();
     }
-  } catch(e) {
-    btn.textContent = '카메라 오류';
-    box.classList.remove('recording');
-    isRecordingVideo[i] = false;
+  };
+  genreContainer.appendChild(btn);
+});
+
+function getMoodText() {
+  return document.getElementById('genreInput').value.trim() || 'Chiptune RPG 스타일';
+}
+
+// ── VISUALIZER ──
+let vizRunning=false;
+function initVisualizer() {
+  if (vizRunning) return; vizRunning=true;
+  const canvas=document.getElementById('canvas');
+  const ctx2=canvas.getContext('2d');
+  const oc=document.getElementById('overlayCanvas');
+  const oc2=oc.getContext('2d');
+  const data=new Uint8Array(128);
+  function resize(){
+    canvas.width=canvas.offsetWidth*devicePixelRatio;
+    canvas.height=canvas.offsetHeight*devicePixelRatio;
+    oc.width=oc.offsetWidth*devicePixelRatio;
+    oc.height=oc.offsetHeight*devicePixelRatio;
   }
+  resize(); window.addEventListener('resize',resize);
+  function drawBar(c,d,W,H,fg1,fg2) {
+    c.clearRect(0,0,W,H);
+    const bw=W/d.length;
+    d.forEach((v,i)=>{
+      const pct=v/255, h=pct*H;
+      const g=c.createLinearGradient(0,H-h,0,H);
+      g.addColorStop(0,fg1); g.addColorStop(1,fg2);
+      c.fillStyle=g;
+      c.fillRect(i*bw+1,H-h,bw-2,h);
+    });
+  }
+  function draw(){
+    requestAnimationFrame(draw);
+    if(!analyserNode) return;
+    analyserNode.getByteFrequencyData(data);
+    drawBar(ctx2,data,canvas.width,canvas.height,'rgba(0,220,160,0.85)','rgba(0,100,60,0.1)');
+    drawBar(oc2,data,oc.width,oc.height,'rgba(0,220,160,0.6)','rgba(0,50,40,0.05)');
+  }
+  draw();
 }
 
-// ── Blob → Base64 ──
-function blobToBase64(blob) {
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload  = () => res(r.result.split(',')[1]);
-    r.onerror = rej;
-    r.readAsDataURL(blob);
-  });
-}
-
-function safeParseJSON(text) {
-  try {
-    let clean = text.replace(/```json|```/g, '').trim();
-    const m = clean.match(/\{[\s\S]*\}/);
-    if (m) return JSON.parse(m[0]);
-    return JSON.parse(clean);
-  } catch(e) { throw new Error('JSON 추출 실패: ' + e.message); }
-}
-
-function log(msg, type = '') {
-  const box = document.getElementById('logBox');
+// ── LOG ──
+function log(msg,type='') {
+  const box=document.getElementById('logBox');
   box.classList.add('visible');
-  const line = document.createElement('div');
-  line.className = `log-line ${type}`;
-  const ts = new Date().toLocaleTimeString('ko-KR', { hour12: false, hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  line.textContent = `[${ts}] ${msg}`;
-  box.appendChild(line);
-  box.scrollTop = box.scrollHeight;
+  const el=document.createElement('div');
+  el.className='log-line '+(type||'');
+  const ts=new Date().toLocaleTimeString('ko-KR',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  el.textContent=`[${ts}] ${msg}`;
+  box.appendChild(el); box.scrollTop=box.scrollHeight;
 }
-
-function setProgress(pct) {
-  document.getElementById('btnProgress').style.width = pct + '%';
-}
-
-// ── Gemini: 오디오 분석 ──
-async function analyzeAudioWithGemini(blob, index, apiKey) {
-  const b64      = await blobToBase64(blob);
-  const mimeType = blob.type.includes('wav') ? 'audio/wav' : (blob.type || 'audio/webm');
-
-  const prompt = `You are an audio analysis AI for a music beat generator app.
-Analyze this audio clip and return ONLY valid JSON (no markdown, no explanation):
-{
-  "instrument": "<Korean name e.g. 킥드럼, 스네어, 하이햇, 박수, 발걸음>",
-  "instrument_en": "<English role: kick|snare|hihat|bass|perc|vocal|fx>",
-  "peak_ms": <integer ms 0-2500 where energy peaks>,
-  "energy": <float 0.0-1.0>,
-  "description": "<Korean 1-sentence>"
-}`;
-
-  const url  = `${GEMINI_API_BASE}/${getModel()}:generateContent?key=${apiKey}`;
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [
-        { inline_data: { mime_type: mimeType, data: b64 } },
-        { text: prompt }
-      ]}],
-      generationConfig: { temperature: 0.1, response_mime_type: 'application/json' }
-    })
-  });
-  if (!resp.ok) { const t = await resp.text(); throw new Error(`Gemini ${resp.status}: ${t.slice(0,200)}`); }
-  const data = await resp.json();
-  return safeParseJSON(data.candidates?.[0]?.content?.parts?.[0]?.text || '{}');
-}
-
-// ── Gemini: 비트 설계 ──
-async function designBeatWithGemini(analyses, apiKey) {
-    // 입력된 소리들의 모든 인덱스(sound_index) 목록을 추출합니다. (예: [0, 1, 2, 3, 4])
-  const allSoundIndices = analyses.map(a => a.index);
-
-  const prompt = `You are a professional music producer AI. Design a rich, multi-layered 16-step beat pattern.
-Available Sounds: ${JSON.stringify(analyses)}
-
-[CRITICAL MANDATORY RULE]
-You MUST include EVERY SINGLE sound_index from the available sounds (${JSON.stringify(allSoundIndices)}) at least ONCE (ideally multiple times) in the "sequence" array. DO NOT drop or ignore any sound_index. Every recorded sound must participate in the music!
-
-Assign roles appropriately based on their instrument characteristics:
-- Sounds like kick/bass: place on steps 0, 4, 8, 12 (Downbeats)
-- Sounds like snare/clap: place on steps 4, 12 (Backbeats)
-- Sounds like hihat/crisp sounds: place on steps 2, 6, 10, 14 or off-beats
-- Other percussions/FX: distribute creatively across empty steps (0-15) so that every single sound is used.
-
-Return ONLY valid JSON:
-{
-  "bpm": <integer 80-140>,
-  "description": "<Korean 2 sentences explaining how you blended ALL elements together>",
-  "sequence": [
-    {"step":<0-15>,"sound_index":<0-4>,"beat_type":"<kick|snare|hihat|perc>","velocity":<0.5-1.0>}
-  ]
-}`;
-
-  const url  = `${GEMINI_API_BASE}/${getModel()}:generateContent?key=${apiKey}`;
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { temperature: 0.4, response_mime_type: 'application/json' }
-    })
-  });
-  if (!resp.ok) { const t = await resp.text(); throw new Error(`Gemini ${resp.status}: ${t.slice(0,200)}`); }
-  const data = await resp.json();
-  return safeParseJSON(data.candidates?.[0]?.content?.parts?.[0]?.text || '{}');
-}
-
-// ── 피크 구간 추출 → WAV Blob ──
-async function extractPeakClip(blob, peakMs) {
+function setProgress(p){ document.getElementById('btnProgress').style.width=p+'%'; }
+function setLabel(t){ document.getElementById('generateLabel').textContent=t; }
+function safeJSON(text) {
   try {
-    const ab  = await blob.arrayBuffer();
-    const buf = await decodeAudio(ab.slice(0));
+    let c=text.replace(/```json|```/g,'').trim();
+    const m=c.match(/\{[\s\S]*\}/); if(m) return JSON.parse(m[0]);
+    return JSON.parse(c);
+  } catch(e){ throw new Error('JSON 파싱 실패: '+e.message); }
+}
 
-    const sr      = buf.sampleRate;
-    const start   = Math.floor((peakMs / 1000) * sr);
-    const clipLen = Math.floor(0.5 * sr);
-    const end     = Math.min(start + clipLen, buf.length);
-    const actual  = end - start;
-    if (actual <= 0) return blob;
+// ── HISTORY ──
+function pushHistory(tracks) {
+  const entry = {
+    bpm: tracks.bpm,
+    title: tracks.title,
+    tracks: JSON.parse(JSON.stringify(tracks.tracks)),
+    mood: getMoodText(),
+    ts: new Date().toLocaleTimeString('ko-KR',{hour12:false,hour:'2-digit',minute:'2-digit'})
+  };
+  historyList.unshift(entry);
+  if (historyList.length > 5) historyList.pop();
+  currentHistIdx = 0;
+  renderHistory();
+}
 
-    const AC      = window.AudioContext || window.webkitAudioContext;
-    const offCtx  = new OfflineAudioContext(buf.numberOfChannels, actual, sr);
-    const offBuf  = offCtx.createBuffer(buf.numberOfChannels, actual, sr);
-    for (let ch = 0; ch < buf.numberOfChannels; ch++) {
-      offBuf.copyToChannel(buf.getChannelData(ch).slice(start, end), ch);
-    }
-    const src = offCtx.createBufferSource();
-    src.buffer = offBuf;
-    src.connect(offCtx.destination);
-    src.start();
-    const rendered = await offCtx.startRendering();
-
-    // AudioBuffer → WAV
-    const nCh = rendered.numberOfChannels;
-    const len  = rendered.length;
-    const pcm  = new Float32Array(len * nCh);
-    for (let ch = 0; ch < nCh; ch++) {
-      const cd = rendered.getChannelData(ch);
-      for (let j = 0; j < len; j++) pcm[j * nCh + ch] = cd[j];
-    }
-    return float32ToWavBlob(pcm, sr); // ← 항상 WAV 반환 (iOS 호환)
-  } catch(e) {
-    return blob; // 실패 시 원본 반환
+function renderHistory() {
+  const container = document.getElementById('historyList');
+  if (historyList.length === 0) {
+    container.innerHTML = '<div class="history-empty">아직 생성된 음악이 없습니다.</div>';
+    return;
   }
+  container.innerHTML = '';
+  historyList.forEach((entry, idx) => {
+    const div = document.createElement('div');
+    div.className = 'history-item' + (idx === currentHistIdx ? ' current' : '');
+    div.innerHTML = `
+      <div class="history-num">#${historyList.length - idx}</div>
+      <div class="history-info">
+        <div class="history-ttl">${entry.title}</div>
+        <div class="history-sub">${entry.mood.slice(0,30)} · ${entry.ts}</div>
+      </div>
+      <div class="history-bpm">${entry.bpm} BPM</div>
+    `;
+    div.onclick = () => loadHistory(idx);
+    container.appendChild(div);
+  });
+}
+
+function loadHistory(idx) {
+  const entry = historyList[idx];
+  if (!entry) return;
+  currentHistIdx = idx;
+  generatedTracks = { bpm: entry.bpm, title: entry.title, tracks: entry.tracks };
+  currentBpm = entry.bpm;
+  document.getElementById('bpmDisplay').textContent = entry.bpm;
+  document.getElementById('bpmSlider').value = entry.bpm;
+  document.getElementById('bpmSliderVal').textContent = entry.bpm;
+  document.getElementById('trackTitleDisplay').textContent = entry.title;
+  const scoreLines = Object.entries(entry.tracks||{})
+    .map(([ch,abc]) => `[${ch.toUpperCase()}] ${(abc||'').replace(/\n/g,' ').slice(0,80)}`)
+    .join('\n');
+  document.getElementById('abcScoreDisplay').textContent = scoreLines;
+  document.getElementById('downloadBtn').disabled = false;
+  renderHistory();
+  log(`📂 히스토리 #${historyList.length - idx} 불러옴: "${entry.title}"`,'info');
+  // Replay if audio buffers available
+  if (Object.keys(decodedBuffers).length > 0) startPlayback();
+}
+
+// ── ABC NOTATION PARSER ──
+const NOTE_SEMITONES = {C:0,'C#':1,'Db':1,D:2,'D#':3,'Eb':3,E:4,F:5,'F#':6,'Gb':6,G:7,'G#':8,'Ab':8,A:9,'A#':10,'Bb':10,B:11};
+
+function noteNameToMidi(noteName, octave) {
+  const base = NOTE_SEMITONES[noteName];
+  if (base === undefined) return null;
+  return (octave + 1) * 12 + base;
+}
+
+function parseABC(abcStr, bpm) {
+  const events = [];
+  if (!abcStr) return events;
+  const beatSec = 60 / bpm;
+  const unitSec = beatSec / 2;
+  const lines = abcStr.split(/\n|\|/);
+  let inBody = false, bodyStr = '';
+  for (const line of abcStr.split('\n')) {
+    const t = line.trim();
+    if (t.startsWith('K:') || t.startsWith('M:') || t.startsWith('L:')) { inBody=true; continue; }
+    if (!t.startsWith('X:') && !t.startsWith('T:') && !t.startsWith('C:') && !t.startsWith('Q:')) {
+      if (inBody || (!t.includes(':'))) bodyStr += t + ' ';
+    }
+  }
+  if (!bodyStr) bodyStr = abcStr.replace(/X:\d+|T:[^\n]*|K:[^\n]*|M:[^\n]*|L:[^\n]*|Q:[^\n]*/g,'').replace(/\|/g,' ');
+  const tokenRe = /([_=^]?)([A-Ga-gz])([,']*)(\/?\d*\/?|\d*)/g;
+  let match;
+  while ((match=tokenRe.exec(bodyStr))!==null) {
+    const [,acc,letter,octMod,durStr] = match;
+    let durMult = 1;
+    if (durStr) {
+      if (durStr.includes('/')) {
+        const parts = durStr.split('/');
+        const num = parts[0]===''?1:parseFloat(parts[0])||1;
+        const den = parts[1]===''?2:parseFloat(parts[1])||2;
+        durMult = num/den;
+      } else if (durStr !== '') { durMult = parseFloat(durStr)||1; }
+    }
+    const dur = unitSec * durMult;
+    if (letter==='z') { events.push({midi:null, duration:dur}); continue; }
+    let oct = letter===letter.toUpperCase() ? 4 : 5;
+    for (const c of octMod) { if(c===',') oct--; if(c==="'") oct++; }
+    let noteName = letter.toUpperCase();
+    if (acc==='^') noteName += '#';
+    if (acc==='_') noteName = noteName + 'b';
+    const flatMap={'Db':1,'Eb':3,'Fb':4,'Gb':6,'Ab':8,'Bb':10,'Cb':11};
+    let midi;
+    if (flatMap[noteName]!==undefined) { midi = (oct+1)*12 + flatMap[noteName]; }
+    else { midi = noteNameToMidi(noteName, oct); }
+    if (midi===null) continue;
+    events.push({midi, duration:dur});
+  }
+  return events;
+}
+
+function midiToRate(midi, baseMidi=60) {
+  if (midi===null) return null;
+  return Math.pow(2,(midi-baseMidi)/12);
+}
+
+// ── GEMINI CALL ──
+async function callGemini8Track(names, apiKey) {
+  const mood = getMoodText();
+  // Build channel description for active channels only
+  const chLines = [];
+  const roleMap = ['베이스 역할','코드/리드 역할','멜로디 역할','패드/화음 역할','타악기 역할','보조 타악기','스네어/클랩 역할','하이햇/심벌 역할'];
+  for (let i=0;i<activeChannels;i++) {
+    chLines.push(`- CH${i}: ${names[i]} (${roleMap[i]||'보조 역할'})`);
+  }
+  // For inactive channels fill with rests
+  const inactiveNote = [];
+  for (let i=activeChannels;i<8;i++) {
+    inactiveNote.push(`"ch${i}": "X:1\\nT:CH${i}\\nM:4/4\\nL:1/8\\nK:C\\n|z8|z8|z8|z8|z8|z8|z8|z8|"`);
+  }
+
+  const prompt = `너는 슈퍼패미컴 SPC700 칩셋 전용 천재 작곡가 AI야.
+아래 악기 구성으로 "${mood}" 분위기의 8마디짜리 Chiptune 음악을 작곡해줘.
+서로 완벽한 화음과 리듬을 이루도록 해.
+
+[악기 구성]
+${chLines.join('\n')}
+
+[출력 규칙]
+반드시 다른 텍스트 없이 아래 JSON 포맷으로만 응답해.
+- 음역은 C3~C6 범위를 사용
+- 타악기 채널에는 동일한 음을 리듬 패턴으로 반복
+- 쉴 때는 z(쉼표) 사용
+- 음표 길이: 1=1/8박, 2=1/4박, 4=1/2박, 8=1박
+- 모든 채널이 동일한 총 길이를 가져야 함 (8마디, 4/4박자 기준 총 256개 1/8박자)
+- 비활성 채널(${activeChannels}번 이후)은 쉼표(z)로만 채워
+{
+  "bpm": 120,
+  "title": "제목",
+  "tracks": {
+    "ch0": "X:1\\nT:CH0\\nM:4/4\\nL:1/8\\nK:C\\n|C,4 G,,4|C,4 G,,4|F,4 A,,4|G,4 C,4|C,4 G,,4|C,4 G,,4|F,4 A,,4|G,8|",
+    "ch1": "X:1\\nT:CH1\\nM:4/4\\nL:1/8\\nK:C\\n|E2G2c2e2|E2G2c2e2|F2A2c2f2|G2B2d2g2|E2G2c2e2|E2G2c2e2|F2A2c2f2|G4z4|",
+    "ch2": "X:1\\nT:CH2\\nM:4/4\\nL:1/8\\nK:C\\n|c2d2e2g2|c2d2e4|f2e2d2c2|g8|c2d2e2g2|c2d2e4|f2e2d2c2|g8|",
+    "ch3": "X:1\\nT:CH3\\nM:4/4\\nL:1/8\\nK:C\\n|z8|z8|z8|z8|z8|z8|z8|z8|",
+    "ch4": "X:1\\nT:CH4\\nM:4/4\\nL:1/8\\nK:C\\n|C4z4|C4z4|C4z4|C4z4|C4z4|C4z4|C4z4|C4z4|",
+    "ch5": "X:1\\nT:CH5\\nM:4/4\\nL:1/8\\nK:C\\n|z4C4|z4C4|z4C4|z4C4|z4C4|z4C4|z4C4|z4C4|",
+    "ch6": "X:1\\nT:CH6\\nM:4/4\\nL:1/8\\nK:C\\n|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|",
+    "ch7": "X:1\\nT:CH7\\nM:4/4\\nL:1/8\\nK:C\\n|C1C1C1C1C1C1C1C1|C1C1C1C1C1C1C1C1|C1C1C1C1C1C1C1C1|C1C1C1C1C1C1C1C1|C1C1C1C1C1C1C1C1|C1C1C1C1C1C1C1C1|C1C1C1C1C1C1C1C1|C1C1C1C1C1C1C1C1|"
+    ${inactiveNote.length ? ',\n    '+inactiveNote.join(',\n    ') : ''}
+  }
+}`;
+
+  const url = `${GEMINI_BASE}/${getModel()}:generateContent?key=${apiKey}`;
+  const resp = await fetch(url,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      contents:[{parts:[{text:prompt}]}],
+      generationConfig:{temperature:0.85, response_mime_type:'application/json'}
+    })
+  });
+  if (!resp.ok) { const t=await resp.text(); throw new Error(`Gemini ${resp.status}: ${t.slice(0,200)}`); }
+  const data=await resp.json();
+  return safeJSON(data.candidates?.[0]?.content?.parts?.[0]?.text||'{}');
 }
 
 // ── MAIN GENERATE ──
-async function generateBeat() {
-  const apiKey = document.getElementById('apiKey').value.trim();
-  if (!apiKey) { log('❌ Gemini API 키를 입력해줘!', 'err'); return; }
-  const recorded = audioRecordings.filter(Boolean).length;
-  if (recorded === 0) { log('❌ 소리를 최소 1개 이상 녹음해야 해!', 'err'); return; }
+async function generateMusic() {
+  const apiKey=document.getElementById('apiKey').value.trim();
+  if (!apiKey){ log('❌ Gemini API 키를 입력해주세요','err'); return; }
+  const filled=audioRecordings.slice(0,activeChannels).filter(Boolean).length;
+  if (filled===0){ log('❌ 최소 1개 채널에 샘플을 등록하세요','err'); return; }
 
-  const btn   = document.getElementById('generateBtn');
-  const label = document.getElementById('generateLabel');
-  btn.disabled = true;
-  label.textContent = '🔍 AI 분석 중...';
-  setProgress(5);
+  const btn=document.getElementById('generateBtn');
+  btn.disabled=true;
+  document.getElementById('logBox').innerHTML='';
+  log(`🚀 SPC700 음악 생성 시작 — ${filled}/${activeChannels}채널 활성`,'info');
+  log(`📡 모델: ${getModel()}`,'info');
+  log(`🎭 분위기: ${getMoodText()}`,'info');
+  setProgress(5); setLabel('🎙 AudioContext 초기화...');
 
-  // ★ 유저 버튼 클릭 안에서 AudioContext 확보
   await ensureAudioCtx();
 
-  document.getElementById('logBox').innerHTML = '';
-  log('🚀 비트 생성 시작!', 'info');
-  log(`📡 모델: ${getModel()} | 환경: ${needsPCMRecord ? 'iOS/Safari' : 'Standard'}`, 'info');
-
-  const validIndices = [];
-  for (let i = 0; i < NUM; i++) {
-    if (!audioRecordings[i]) { analysisResults[i] = null; continue; }
-    log(`🎤 소리 ${i+1} 분석 중...`, 'info');
-    label.textContent = `🎤 소리 ${i+1}/${recorded} 분석 중...`;
+  // 1. Peak clip extraction
+  setProgress(15); setLabel('✂ 샘플 피크 추출 중...');
+  const peakClips = Array(MAX_CH).fill(null);
+  for (let i=0;i<activeChannels;i++) {
+    if (!audioRecordings[i]) continue;
     try {
-      const result = await analyzeAudioWithGemini(audioRecordings[i], i, apiKey);
-      analysisResults[i] = result;
-      validIndices.push(i);
-      document.getElementById(`ss-badge-${i}`).textContent   = result.instrument;
-      document.getElementById(`ss-badge-${i}`).style.display = 'block';
-      document.getElementById(`ss-status-${i}`).textContent  = `${result.instrument} · 피크 ${result.peak_ms}ms`;
-      document.getElementById(`ss-status-${i}`).className    = 'slot-status ok';
-      log(`✅ 소리 ${i+1}: ${result.instrument}`, 'ok');
-      setProgress(5 + (validIndices.length / recorded) * 50);
-    } catch(e) {
-      log(`⚠ 소리 ${i+1} 분석 실패: ${e.message}`, 'err');
-      analysisResults[i] = { instrument: '퍼커션', instrument_en: 'perc', peak_ms: 0, energy: 0.7, description: '분석실패' };
-      validIndices.push(i);
-    }
-  }
-
-  setProgress(60);
-  label.textContent = '✂ 피크 클립 추출 중...';
-  log('✂ 0.5초 피크 구간 추출 중...', 'info');
-  const peakClips = Array(NUM).fill(null);
-  for (const i of validIndices) {
-    try {
-      peakClips[i] = await extractPeakClip(audioRecordings[i], analysisResults[i].peak_ms);
-      log(`✅ 소리 ${i+1} 클립 추출 완료`, 'ok');
+      peakClips[i] = await extractPeakClip(audioRecordings[i], i);
+      log(`✅ CH${i} 피크 추출 완료`,'ok');
     } catch(e) {
       peakClips[i] = audioRecordings[i];
-      log(`⚠ 소리 ${i+1} 원본 사용: ${e.message}`, 'err');
+      log(`⚠ CH${i} 원본 사용: ${e.message}`,'err');
     }
   }
 
-  setProgress(72);
-  label.textContent = '🧠 비트 패턴 설계 중...';
-  log('🧠 비트 패턴 설계 중...', 'info');
-  const validAnalyses = validIndices.map(i => ({ ...analysisResults[i], index: i }));
-  try {
-    beatPattern = await designBeatWithGemini(validAnalyses, apiKey);
-    log(`🎵 BPM: ${beatPattern.bpm} — ${beatPattern.description}`, 'ok');
-  }  catch(e) {
-    log(`⚠ 비트 설계 실패, 모든 악기를 포함한 기본 패턴 사용: ${e.message}`, 'err');
-    
-    // ★ 예외 상황에서도 모든 악기(validIndices)가 16비트 안에 무조건 배치되도록 보장
-    const fallbackSequence = [];
-    validIndices.forEach((idx, pos) => {
-      // 악기 순서(pos)에 따라 서로 다른 박자에 배치하여 겹치지 않고 모두 소리 나게 함
-      const steps = [
-        [0, 8],      // 1번째 악기: 쿵, 쿵
-        [4, 12],     // 2번째 악기: 짝, 짝
-        [2, 6, 10, 14], // 3번째 악기: 쪼개는 하이햇 역할
-        [1, 9],      // 4번째 악기: 싱코페이션 엇박
-        [5, 13]      // 5번째 악기: 뒷박 포인트
-      ][pos % 5];
-      
-      steps.forEach(step => {
-        fallbackSequence.push({
-          step, 
-          sound_index: idx, 
-          beat_type: 'perc', 
-          velocity: 0.8
-        });
-      });
-    });
-
-    beatPattern = {
-      bpm: 110, 
-      description: 'AI 연결 실패로 녹음된 모든 소리를 조합한 기본 테크노 비트를 구성했습니다.',
-      sequence: fallbackSequence
-    };
-  }
-
-  setProgress(90);
-  label.textContent = '▶ 재생 중...';
-  log('▶ 비트 재생 시작!', 'info');
-  await startPlayback(peakClips, beatPattern);
-
-  setProgress(100);
-  btn.disabled = false;
-  setTimeout(() => { setProgress(0); label.textContent = ''; }, 1000);
-}
-
-// ── PLAYBACK ──
-async function startPlayback(peakClips, pattern) {
-  stopPlayback();
-
-  const grid = document.getElementById('playGrid');
-  grid.innerHTML = '';
-  document.getElementById('beatDesc').textContent = pattern.description || '';
-
-  for (let i = 0; i < NUM; i++) {
-    if (!audioRecordings[i]) continue;
-    const cell = document.createElement('div');
-    cell.className = 'play-cell';
-    cell.id = `pc-${i}`;
-
-    if (videoRecordings[i]) {
-      const v = document.createElement('video');
-      v.src = URL.createObjectURL(videoRecordings[i]);
-      v.muted = true; v.loop = true; v.playsInline = true;
-      cell.appendChild(v);
-    } else {
-      const ph = document.createElement('div');
-      ph.style.cssText = 'aspect-ratio:9/16;background:linear-gradient(135deg,#00c880,#00b8d0);display:flex;align-items:center;justify-content:center;font-size:28px;';
-      ph.textContent = ['🥁','🎵','🎶','🎤','🎸'][i];
-      cell.appendChild(ph);
-    }
-    const lbl = document.createElement('div');
-    lbl.className = 'beat-label';
-    lbl.textContent = analysisResults[i]?.instrument || `#${i+1}`;
-    cell.appendChild(lbl);
-    grid.appendChild(cell);
-  }
-
-  document.getElementById('playOverlay').classList.add('active');
-
-  // AudioContext 재확인 (유저 액션 → STOP → 재시작 경우 대비)
-  await ensureAudioCtx();
-  initVisualizer();
-
-  // ── 디코딩: 반드시 WAV blob을 decodeAudio로 ──
-  const decodedBuffers = {};
-  for (let i = 0; i < NUM; i++) {
+  // 2. Decode all buffers
+  setProgress(35); setLabel('🔊 오디오 디코딩 중...');
+  decodedBuffers = {};
+  for (let i=0;i<activeChannels;i++) {
     if (!peakClips[i]) continue;
     try {
       const ab = await peakClips[i].arrayBuffer();
       decodedBuffers[i] = await decodeAudio(ab);
-      log(`🔊 소리 ${i+1} 디코딩 완료 (${decodedBuffers[i].duration.toFixed(2)}s)`, 'ok');
+      log(`✅ CH${i} 디코딩 완료 (${decodedBuffers[i].duration.toFixed(2)}s)`,'ok');
     } catch(e) {
-      log(`⚠ 소리 ${i+1} 디코딩 실패: ${e.message}`, 'err');
+      log(`⚠ CH${i} 디코딩 실패: ${e.message}`,'err');
     }
   }
 
-  const bpm    = pattern.bpm || 100;
-  const stepMs = (60000 / bpm) / 4;   // 1/16 note in ms
-  const loopMs = stepMs * 16;
-
-  function playLoop(loopStart) {
-    if (!audioCtx) return;
-    pattern.sequence.forEach(step => {
-      const si       = step.sound_index;
-      const when     = loopStart + (step.step * stepMs) / 1000;
-      const velocity = step.velocity || 0.8;
-
-      if (decodedBuffers[si] && when >= audioCtx.currentTime) {
-        const src  = audioCtx.createBufferSource();
-        src.buffer = decodedBuffers[si];
-
-        const gain = audioCtx.createGain();
-        gain.gain.value = velocity;
-
-        // ★ 핵심: src → gain → analyser → destination (iOS 포함 전부 소리 남)
-        src.connect(gain);
-        gain.connect(analyserNode);
-        // analyserNode는 이미 destination에 연결돼 있음 (ensureAudioCtx에서)
-        src.start(when);
+  // 3. AI composition
+  setProgress(60); setLabel('🧠 Gemini AI 작곡 중...');
+  const names = instNames.map((n,i) => n || CH_DEFAULTS[i].name);
+  try {
+    generatedTracks = await callGemini8Track(names, apiKey);
+    log(`🎵 제목: "${generatedTracks.title}" — BPM ${generatedTracks.bpm}`,'ok');
+    log(`✅ 8채널 8마디 ABC 악보 수신 완료`,'ok');
+  } catch(e) {
+    log(`⚠ AI 작곡 실패: ${e.message}`,'err');
+    generatedTracks = {
+      bpm:120, title:'SPC700 Default',
+      tracks:{
+        ch0:'X:1\nK:C\n|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|C,2C,2G,,2G,,2|',
+        ch1:'X:1\nK:C\n|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|E2G2E2G2|',
+        ch2:'X:1\nK:C\n|c2e2g2e2|c2e2g2e2|c2e2g2e2|c2e2g2e2|c2e2g2e2|c2e2g2e2|c2e2g2e2|c2e2g2e2|',
+        ch3:'X:1\nK:C\n|z8|z8|z8|z8|z8|z8|z8|z8|',
+        ch4:'X:1\nK:C\n|C4z4|C4z4|C4z4|C4z4|C4z4|C4z4|C4z4|C4z4|',
+        ch5:'X:1\nK:C\n|z4C4|z4C4|z4C4|z4C4|z4C4|z4C4|z4C4|z4C4|',
+        ch6:'X:1\nK:C\n|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|z2C2z2C2|',
+        ch7:'X:1\nK:C\n|C1z1C1z1C1z1C1z1|C1z1C1z1C1z1C1z1|C1z1C1z1C1z1C1z1|C1z1C1z1C1z1C1z1|C1z1C1z1C1z1C1z1|C1z1C1z1C1z1C1z1|C1z1C1z1C1z1C1z1|C1z1C1z1C1z1C1z1|',
       }
-
-      const delayMs = (when - audioCtx.currentTime) * 1000;
-      const t = setTimeout(() => {
-        highlightCell(si);
-        const vid = document.querySelector(`#pc-${si} video`);
-        if (vid) { vid.currentTime = 0; vid.play().catch(() => {}); }
-      }, Math.max(0, delayMs));
-      playTimers.push(t);
-    });
-
-    const nextDelay = (loopStart + loopMs / 1000 - audioCtx.currentTime) * 1000 - 80;
-    const t = setTimeout(() => {
-      if (audioCtx) playLoop(audioCtx.currentTime + 0.05);
-    }, Math.max(0, nextDelay));
-    playTimers.push(t);
+    };
   }
 
-  playLoop(audioCtx.currentTime + 0.15);
+  // Display BPM + title
+  currentBpm = generatedTracks.bpm || 120;
+  document.getElementById('bpmDisplay').textContent = currentBpm;
+  document.getElementById('bpmSlider').value = currentBpm;
+  document.getElementById('bpmSliderVal').textContent = currentBpm;
+  document.getElementById('trackTitleDisplay').textContent = generatedTracks.title || 'SPC700 Track';
+  const scoreLines = Object.entries(generatedTracks.tracks||{})
+    .map(([ch,abc]) => `[${ch.toUpperCase()}] ${(abc||'').replace(/\n/g,' ').slice(0,80)}`)
+    .join('\n');
+  document.getElementById('abcScoreDisplay').textContent = scoreLines;
+
+  // Push to history
+  pushHistory(generatedTracks);
+
+  // Enable download
+  document.getElementById('downloadBtn').disabled = false;
+
+  // 4. Start playback
+  setProgress(90); setLabel('▶ 재생 시작...');
+  await startPlayback();
+  setProgress(100);
+  setTimeout(()=>{ setProgress(0); setLabel(''); }, 800);
+  btn.disabled=false;
 }
 
-function highlightCell(i) {
-  document.querySelectorAll('.play-cell').forEach(c => c.classList.remove('active'));
-  const cell = document.getElementById(`pc-${i}`);
-  if (cell) {
-    cell.classList.add('active');
-    setTimeout(() => cell.classList.remove('active'), 350);
+// ── PLAYBACK ENGINE ──
+let parsedTracksCache = null;
+
+async function startPlayback() {
+  stopPlayback();
+  if (!generatedTracks) return;
+  await ensureAudioCtx();
+  initVisualizer();
+
+  const bpm = currentBpm;
+  const tracks = generatedTracks.tracks || {};
+
+  const parsedTracks = {};
+  for (let i=0;i<MAX_CH;i++) {
+    const abc = tracks[`ch${i}`] || '';
+    parsedTracks[i] = parseABC(abc, bpm);
+    log(`🎼 CH${i}: ${parsedTracks[i].length}개 이벤트`,'info');
   }
+  parsedTracksCache = parsedTracks;
+
+  // Build play grid
+  const grid=document.getElementById('playGrid');
+  grid.innerHTML='';
+  document.getElementById('beatDesc').textContent=`"${generatedTracks.title}" — ${bpm} BPM`;
+
+  for (let i=0;i<MAX_CH;i++) {
+    if (!decodedBuffers[i] && parsedTracks[i].length===0) continue;
+    const cell=document.createElement('div');
+    cell.className='play-cell'+(muteStates[i]?' muted-cell':'');
+    cell.id=`pc-${i}`;
+    cell.innerHTML=`
+      <div class="play-cell-ch">CH${i}</div>
+      <div class="play-cell-name">${instNames[i]||CH_DEFAULTS[i].name}</div>
+      <div class="play-cell-note" id="pcn-${i}">—</div>
+      <div class="play-cell-viz" id="pcv-${i}">
+        ${Array(5).fill('<span style="height:3px"></span>').join('')}
+      </div>
+    `;
+    grid.appendChild(cell);
+  }
+
+  document.getElementById('playOverlay').classList.add('active');
+  isPlaying=true;
+  loopCount=0;
+
+  scheduleAllChannels(parsedTracks, bpm);
+}
+
+function scheduleAllChannels(parsedTracks, bpm) {
+  if (!isPlaying) return;
+  loopCount++;
+  document.getElementById('loopNum').textContent = loopCount;
+  document.getElementById('loopNumOverlay').textContent = loopCount;
+
+  let loopSec = 0;
+  for (let i=0;i<MAX_CH;i++) {
+    const total = parsedTracks[i].reduce((a,e)=>a+e.duration,0);
+    if (total>loopSec) loopSec=total;
+  }
+  if (loopSec===0) loopSec = 16 * (60/bpm); // 8 bars fallback
+
+  const now = audioCtx.currentTime + 0.1;
+
+  for (let ch=0;ch<MAX_CH;ch++) {
+    if (!decodedBuffers[ch]) continue;
+    if (!isChannelAudible(ch)) continue;
+    const evts = parsedTracks[ch];
+    if (!evts||evts.length===0) continue;
+    let t = now;
+    for (const evt of evts) {
+      const when = t; t += evt.duration;
+      if (evt.midi === null) continue;
+      const rate = midiToRate(evt.midi, 60);
+      scheduleNote(ch, when, rate, evt.duration);
+    }
+  }
+
+  scheduleVisuals(parsedTracks, now, bpm);
+
+  const loopTimer = setTimeout(() => {
+    if (isPlaying) scheduleAllChannels(parsedTracks, bpm);
+  }, (loopSec - 0.1) * 1000);
+  playTimers.push(loopTimer);
+}
+
+function scheduleNote(ch, when, rate, dur) {
+  if (!audioCtx || !decodedBuffers[ch]) return;
+  if (when < audioCtx.currentTime) return;
+  try {
+    const src = audioCtx.createBufferSource();
+    src.buffer = decodedBuffers[ch];
+    src.playbackRate.value = Math.max(0.1, Math.min(8.0, rate));
+    // Apply detune (cents → additional rate multiplication)
+    const detuneMult = Math.pow(2, detuneValues[ch] / 1200);
+    src.playbackRate.value = Math.max(0.1, Math.min(8.0, src.playbackRate.value * detuneMult));
+
+    const gain = audioCtx.createGain();
+    gain.gain.value = volValues[ch];
+    gain.gain.setValueAtTime(volValues[ch], when);
+    gain.gain.linearRampToValueAtTime(0, when + dur);
+
+    src.connect(gain);
+    gain.connect(analyserNode);
+    src.start(when);
+    src.stop(when + dur + 0.02);
+  } catch(e){}
+}
+
+function scheduleVisuals(parsedTracks, startTime, bpm) {
+  for (let ch=0;ch<MAX_CH;ch++) {
+    const evts = parsedTracks[ch];
+    if (!evts||evts.length===0) continue;
+    let t = startTime;
+    for (const evt of evts) {
+      const when = t; t += evt.duration;
+      if (evt.midi === null) continue;
+      const noteLabel = midiToNoteName(evt.midi);
+      const delayMs = (when - audioCtx.currentTime) * 1000;
+      if (delayMs < 0) continue;
+      const timer = setTimeout(() => {
+        if (!isPlaying) return;
+        flashChannel(ch, noteLabel);
+      }, delayMs);
+      playTimers.push(timer);
+    }
+  }
+}
+
+function midiToNoteName(midi) {
+  const names=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+  const oct = Math.floor(midi/12)-1;
+  return names[midi%12]+oct;
+}
+
+function flashChannel(ch, noteLabel) {
+  const cell = document.getElementById(`pc-${ch}`);
+  const noteEl = document.getElementById(`pcn-${ch}`);
+  const vizEl  = document.getElementById(`pcv-${ch}`);
+  if (!cell) return;
+  cell.classList.add('active');
+  if (noteEl) noteEl.textContent = noteLabel||'—';
+  if (vizEl) {
+    const bars = vizEl.querySelectorAll('span');
+    bars.forEach(b => { b.style.height = (Math.random()*24+4)+'px'; });
+  }
+  const ind = document.getElementById(`ch-ind-${ch}`);
+  if (ind) { ind.classList.add('lit'); setTimeout(()=>ind.classList.remove('lit'),150); }
+  setTimeout(() => {
+    cell.classList.remove('active');
+    if (vizEl) vizEl.querySelectorAll('span').forEach(b=>b.style.height='3px');
+  }, 120);
 }
 
 function stopPlayback() {
-  playTimers.forEach(t => clearTimeout(t));
-  playTimers = [];
+  isPlaying=false;
+  playTimers.forEach(t=>clearTimeout(t));
+  playTimers=[];
   document.getElementById('playOverlay').classList.remove('active');
+  for(let i=0;i<MAX_CH;i++){
+    const ind=document.getElementById(`ch-ind-${i}`);
+    if(ind) ind.classList.remove('lit');
+  }
 }
-</script>
 
+// ── WAV DOWNLOAD ──
+async function downloadWAV() {
+  if (!generatedTracks || Object.keys(decodedBuffers).length === 0) {
+    log('❌ 먼저 음악을 생성하세요','err'); return;
+  }
+  const btn = document.getElementById('downloadBtn');
+  btn.disabled = true; btn.textContent = '⏳ 렌더링 중...';
+  log('💾 WAV 렌더링 시작...','info');
+
+  try {
+    await ensureAudioCtx();
+    const bpm = currentBpm;
+    const tracks = generatedTracks.tracks || {};
+
+    // Parse all
+    const parsedTracks = {};
+    let loopSec = 0;
+    for (let i=0;i<MAX_CH;i++) {
+      const abc = tracks[`ch${i}`] || '';
+      parsedTracks[i] = parseABC(abc, bpm);
+      const total = parsedTracks[i].reduce((a,e)=>a+e.duration,0);
+      if (total>loopSec) loopSec=total;
+    }
+    if (loopSec===0) loopSec = 16*(60/bpm);
+
+    const sr = audioCtx.sampleRate;
+    const totalSamples = Math.ceil(loopSec * sr);
+    const offCtx = new OfflineAudioContext(2, totalSamples, sr);
+    const offAnalyser = offCtx.createAnalyser();
+    offAnalyser.connect(offCtx.destination);
+
+    for (let ch=0;ch<MAX_CH;ch++) {
+      if (!decodedBuffers[ch]) continue;
+      if (!isChannelAudible(ch)) continue;
+      const evts = parsedTracks[ch];
+      if (!evts||evts.length===0) continue;
+      let t = 0;
+      for (const evt of evts) {
+        const when = t; t += evt.duration;
+        if (evt.midi === null) continue;
+        const rate = midiToRate(evt.midi, 60);
+        const detuneMult = Math.pow(2, detuneValues[ch] / 1200);
+        const finalRate = Math.max(0.1, Math.min(8.0, rate * detuneMult));
+        const src = offCtx.createBufferSource();
+        src.buffer = decodedBuffers[ch];
+        src.playbackRate.value = finalRate;
+        const gain = offCtx.createGain();
+        gain.gain.value = volValues[ch];
+        gain.gain.setValueAtTime(volValues[ch], when);
+        gain.gain.linearRampToValueAtTime(0, when + evt.duration);
+        src.connect(gain); gain.connect(offAnalyser);
+        src.start(when); src.stop(when + evt.duration + 0.02);
+      }
+    }
+
+    const rendered = await offCtx.startRendering();
+    // Interleave stereo
+    const L = rendered.getChannelData(0);
+    const R = rendered.numberOfChannels > 1 ? rendered.getChannelData(1) : L;
+    const interleaved = new Float32Array(totalSamples * 2);
+    for (let i=0;i<totalSamples;i++) { interleaved[i*2]=L[i]; interleaved[i*2+1]=R[i]; }
+    // Build WAV (stereo)
+    const dataLen = interleaved.length * 2;
+    const ab = new ArrayBuffer(44 + dataLen);
+    const v = new DataView(ab);
+    const ws = (o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i,s.charCodeAt(i)); };
+    ws(0,'RIFF'); v.setUint32(4,36+dataLen,true);
+    ws(8,'WAVE'); ws(12,'fmt ');
+    v.setUint32(16,16,true); v.setUint16(20,1,true);
+    v.setUint16(22,2,true); v.setUint32(24,sr,true);
+    v.setUint32(28,sr*4,true); v.setUint16(32,4,true);
+    v.setUint16(34,16,true); ws(36,'data');
+    v.setUint32(40,dataLen,true);
+    let off=44;
+    for(let i=0;i<interleaved.length;i++){
+      const s=Math.max(-1,Math.min(1,interleaved[i]));
+      v.setInt16(off,s<0?s*0x8000:s*0x7FFF,true); off+=2;
+    }
+    const wavBlob = new Blob([ab],{type:'audio/wav'});
+    const url = URL.createObjectURL(wavBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(generatedTracks.title||'spc700').replace(/\s+/g,'_')}.wav`;
+    a.click();
+    URL.revokeObjectURL(url);
+    log(`✅ WAV 다운로드 완료 (${loopSec.toFixed(1)}s)`,'ok');
+  } catch(e) {
+    log(`⚠ WAV 렌더링 실패: ${e.message}`,'err');
+  }
+  btn.disabled = false; btn.textContent = '💾 WAV 다운로드';
+}
+
+// ── INIT ──
+initVisualizer();
+</script>
 </body>
 </html>
